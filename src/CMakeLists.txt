@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
-project(UDMX VERSION 0.1 LANGUAGES C CXX)
+project(Sempervirens VERSION 0.1 LANGUAGES C CXX)
 
-include(GNUInstallDirs) # To install libraries into proper locations on all platforms
+# To install libraries into proper locations on all platforms
+include(GNUInstallDirs) 
 
-set(CMAKE_CXX_STANDARD 17) # To replace extra -std=gnu++11 that overtakes target_compile_options with -std=gnu++1z
+# To replace extra -std=gnu++11 that overwrites target_compile_options with -std=gnu++1z
+set(CMAKE_CXX_STANDARD 17) 
 
 # Here import targets
 
