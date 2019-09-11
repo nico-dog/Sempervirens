@@ -12,4 +12,4 @@ set(CMAKE_CXX_STANDARD 17)
 enable_testing()
 
 add_subdirectory(lib)
-add_subdirectory(app)
+#add_subdirectory(app)

@@ -16,10 +16,10 @@ namespace dog::utils {
     std::vector<LogSink> _sinks;
   };
 
-  Logger::Logger() : _pImpl{new LoggerImpl{}, [](LoggerImpl* ptr){ delete ptr; }}
-  {
+  Logger::Logger() : _pImpl{new LoggerImpl{}, [](LoggerImpl* ptr){ delete ptr; }} {
+    
     addSink(makeConsoleSink());
-    //addSink(makeFileSink("/home/nico/Desktop/udmx.log"));
+    addSink(makeFileSink("/home/nico/Desktop/dog.log"));
   }
 
   void Logger::addSink(LogSink sink) {

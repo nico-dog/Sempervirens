@@ -20,6 +20,6 @@ namespace dog::utils {
   };
 }
 
-std::ostream& operator<<(std::ostream& os, udmx::utils::eLogLevel const& level);
+std::ostream& operator<<(std::ostream& os, dog::utils::eLogLevel const& level);
 
 #endif

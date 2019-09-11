@@ -54,14 +54,13 @@ namespace dog::utils {
 
 // Macros to create empty-buffer messages with proper log levels
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)  
-#define gLogLevel(level) (			\
-	udmx::utils::Logger::instance()(	\
-	      udmx::utils::eLogLevel::level, \
-	      __FILENAME__,	\
-              __PRETTY_FUNCTION__, \
-	      __LINE__	\
-	))  
-		     	
+#define gLogLevel(level) (					\
+			  dog::utils::Logger::instance()(		\
+							 dog::utils::eLogLevel::level, \
+							 __FILENAME__,	\
+							 __PRETTY_FUNCTION__, \
+							 __LINE__	\
+									))  		     	
 #define gLog        (gLogLevel(MSG))
 #define gLogDebug   (gLogLevel(DBG))
 #define gLogWarning (gLogLevel(WRN))

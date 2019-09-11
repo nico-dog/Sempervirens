@@ -1,11 +1,11 @@
 #ifndef LOGMSG_INL
 #define LOGMSG_INL
 
-namespace udmx::utils {
+namespace dog::utils {
   
   template<typename T>
-  LogMsg& LogMsg::operator<<(T value)
-  {
+  LogMsg& LogMsg::operator<<(T value) {
+    
     _buffer << value;
     return *this;
   }

@@ -42,30 +42,30 @@ target_compile_features(doglib
 #***************************************
 # platform macros
 if(UNIX)
-target_compile_definitions(udmxlib
+target_compile_definitions(doglib
   PRIVATE LINUX=1)
 endif()
 
 # product macros
 if(${--build_unit_test})
-target_compile_definitions(udmxlib
+target_compile_definitions(doglib
   PRIVATE UNITTEST_BUILD=1)
 endif()
 
 # feature macros
 if(${--feature_thread_affinity})
-target_compile_definitions(udmxlib
+target_compile_definitions(doglib
   PRIVATE THREAD_AFFINITY=1)
 endif()
 
 #***************************************
 #
-# set target compile definitions
+# link to imported targets
 #
 #***************************************
-#target_link_libraries(doglib
-#  PUBLIC
-#  )
+target_link_libraries(doglib
+  PUBLIC
+  pthread)
 
 #***************************************
 #
@@ -91,8 +91,8 @@ endif()
 # define tests for CTest
 #
 #***************************************
-#add_executable(testexe
-#  test/test.cpp)
-#target_link_libraries(testexe
-#  doglib)
-#add_test(NAME testname COMMAND testexe)
+add_executable(logger
+  test/LoggerTest.cpp)
+target_link_libraries(logger
+  doglib)
+add_test(NAME logger-test COMMAND logger)

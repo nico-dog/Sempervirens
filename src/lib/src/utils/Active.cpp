@@ -9,11 +9,13 @@ namespace dog::utils {
 
   public:
     ActiveImpl() {
+
       _thd = std::unique_ptr<std::thread>(new std::thread([=]{ this->run(); }));
     }
+    
     ~ActiveImpl() { _thd->join(); }
 
-    void Active::run() {
+    void run() {
       while (!_done)
       {
 	Message_t msg;

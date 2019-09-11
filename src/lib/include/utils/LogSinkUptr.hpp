@@ -16,20 +16,23 @@
 // Any sink type can be stored as a LogSink as long as we provide the corresponding free function.
 // Sinking should be done with a call operator, so it is enough to provide a single generic free function for all sink types.
 //
+// N.B.: this is the original implementation using a unique_ptr instead of shared_ptr
+//
 //***************************************************
-#ifndef LOGSINK_HPP
-#define LOGSINK_HPP
+#ifndef LOGSINKUPTR_HPP
+#define LOGSINKUPTR_HPP
 #include <utils/LogMsg.hpp>
 #include <memory>
 #include <fstream>
 
 namespace dog::utils {
 
-  class LogSink {
+  class LogSinkUptr {
 
     struct concept_t {
 
       virtual ~concept_t() = default;
+      virtual std::unique_ptr<concept_t> copy_() const = 0;
       virtual void log_(LogMsg::Meta const& meta, std::string const& msg) const = 0;
     };
 
@@ -38,22 +41,35 @@ namespace dog::utils {
       
       model_t(T data);
 
+      std::unique_ptr<concept_t> copy_() const override
+      {
+        return std::make_unique<model_t<T>>(*this);
+      }
+      
       void log_(LogMsg::Meta const& meta, std::string const& msg) const override;
 
       T _data;
     };
 
-    std::shared_ptr<concept_t const> _self;
+    std::unique_ptr<concept_t> _self;
     
   public:
     template<typename T>
-    LogSink(T impl);
+    LogSinkUptr(T impl);
+    
+    LogSinkUptr(LogSink const&);
+    LogSinkUptr(LogSinkUptr&&) noexcept = default;
+    LogSinkUptr& operator=(LogSinkUptr const& logSinkUptr)
+    {
+      return *this = LogSinkUptr(logSinkUptr);
+    }
+    LogSinkUptr& operator=(LogSinkUptr&&) noexcept = default;
 
-    friend void log(LogSink const& sink, LogMsg::Meta const&, std::string const& msg);
+    friend void log(LogSinkUptr const& sink, LogMsg::Meta const&, std::string const& msg);
   };
 
   // Some helper functions to create common type of sinks
-  LogSink makeConsoleSink();
+  LogSinkUptr makeConsoleSink();
   
   class FileSink {
 
@@ -65,7 +81,7 @@ namespace dog::utils {
     std::unique_ptr<std::ofstream> _pFile;
   };
   
-  LogSink makeFileSink(std::string const& filename);
+  LogSinkUptr makeFileSink(std::string const& filename);
 }
-#include <utils/LogSink.inl>
+#include <utils/LogSinkUptr.inl>
 #endif
