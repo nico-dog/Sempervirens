@@ -2,7 +2,7 @@ project(lib VERSION 0.1 LANGUAGES CXX)
 
 #***************************************
 #
-# define target src/includes
+# Define target src/includes
 #
 #***************************************
 add_library(doglib SHARED
@@ -14,12 +14,12 @@ add_library(doglib SHARED
 
 target_include_directories(doglib
   PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+#  $<INSTALL_INTERFACE:include>)
 
 #***************************************
 #
-# set target compile options
+# Set target compile options
 #
 #***************************************
 target_compile_options(doglib
@@ -28,7 +28,7 @@ target_compile_options(doglib
 
 #***************************************
 #
-# set target compile features
+# Set target compile features
 #
 #***************************************
 target_compile_features(doglib
@@ -37,7 +37,7 @@ target_compile_features(doglib
 
 #***************************************
 #
-# set target compile definitions
+# Set target compile definitions
 #
 #***************************************
 # platform macros
@@ -60,16 +60,17 @@ endif()
 
 #***************************************
 #
-# link to imported targets
+# Link to imported targets
 #
 #***************************************
 target_link_libraries(doglib
   PUBLIC
-  pthread)
+  Threads::Threads)
+#  pthread)
 
 #***************************************
 #
-# set target compile definitions
+# Install
 #
 #***************************************
 # 'make install' to the correct locations (provided by GNUInstallDirs)
@@ -88,7 +89,7 @@ target_link_libraries(doglib
 
 #***************************************
 #
-# define tests for CTest
+# Define tests for CTest
 #
 #***************************************
 add_executable(logger
