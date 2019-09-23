@@ -1,6 +1,7 @@
 #define LOGSINK_CPP
 #include <utils/LogSink.hpp>
 #include <utils/LogMsg.hpp>
+#include <utils/Logger.hpp>
 #include <iostream>
 #include <chrono>
 #include <ctime>
@@ -25,18 +26,7 @@ namespace dog::utils {
 
   FileSink::FileSink(std::string const& filename) : _pFile{std::make_unique<std::ofstream>(filename)} {
     if (!_pFile->good())
-    {
-      std::string msg{"Failed to open file: "};
-      msg.append(filename);
-      try
-      {
-	throw std::runtime_error(msg);
-      }
-      catch (std::runtime_error const& e)
-      {
-	std::cerr << "> runtime exception: " << e.what() << '\n';
-      }     
-    }
+      gLogError << "Failed to open file: " << filename;
   }
 
   void FileSink::operator()(LogMsg::Meta const& meta, std::string const& msg) const {

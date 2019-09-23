@@ -36,15 +36,17 @@ namespace dog::utils {
     class LoggerImpl;
     std::unique_ptr<LoggerImpl, void(*)(LoggerImpl*)> _pImpl;
     
-    Logger();
+    Logger(); // Made private for singleton
 
   public:
     ~Logger() = default;
+    Logger(Logger const&) = delete;
+    Logger& operator=(Logger const&) = delete;
     
     void addSink(LogSink sink);
     void flush(LogMsg const* msg);
 
-    LogMsg operator()(eLogLevel level, std::string const& file, std::string const& func, std::size_t line);
+    LogMsg operator()(eLogLevel level, std::string file, std::string func, std::size_t line);
   };
 }
 //#if UDMX_PRODUCT(UNITTEST_BUILD)   

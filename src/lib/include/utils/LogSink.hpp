@@ -59,6 +59,10 @@ namespace dog::utils {
 
   public:
     FileSink(std::string const& filename);
+    ~FileSink() = default;
+    FileSink(FileSink const&) = delete;
+    FileSink& operator=(FileSink const&) = delete;
+    FileSink(FileSink&&) noexcept = default;
 
     void operator()(LogMsg::Meta const& meta, std::string const& msg) const;
 

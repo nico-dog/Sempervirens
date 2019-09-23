@@ -31,9 +31,8 @@ namespace dog::utils {
   private:
     friend class Logger;
     
-    LogMsg(Logger* logger, eLogLevel level, std::string const& file, std::string const& func, std::size_t line);
+    LogMsg(Logger* logger, eLogLevel level, std::string file, std::string func, std::size_t line);
     LogMsg(LogMsg const&) = delete;
-    LogMsg(LogMsg&&) = delete;
 
     Logger* _logger;
     Meta _meta;
@@ -42,7 +41,6 @@ namespace dog::utils {
   public:
     ~LogMsg();
     LogMsg& operator=(LogMsg const&) = delete;
-    LogMsg& operator=(LogMsg&&) = delete;
 
     template<typename T>
     LogMsg& operator<<(T value);

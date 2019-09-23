@@ -11,9 +11,10 @@ namespace dog::utils {
   public:
     LoggerImpl() = default;
     ~LoggerImpl() = default;
-    
-    Active _active;
+
     std::vector<LogSink> _sinks;
+    Active _active;
+    //std::vector<LogSink> _sinks;
   };
 
   Logger::Logger() : _pImpl{new LoggerImpl{}, [](LoggerImpl* ptr){ delete ptr; }} {
@@ -27,16 +28,17 @@ namespace dog::utils {
     _pImpl->_sinks.push_back(std::move(sink));
   }
 
-  void Logger::flush(LogMsg const* msg) {
+  void Logger::flush(LogMsg const* logMsg) {
 
-    auto meta = msg->_meta;
-    auto msg_ = msg->_buffer.str();
-    _pImpl->_active.send([=](){	for (auto const& sink : _pImpl->_sinks) log(sink, meta, msg_); });
+    auto meta = std::move(logMsg->_meta);
+    auto msg = std::move(logMsg->_buffer.str());
+    _pImpl->_active.send([this, _meta{std::move(meta)}, _msg{std::move(msg)}]()
+			 { for (auto const& sink : _pImpl->_sinks) log(sink, _meta, _msg); });
   }
 
-  LogMsg Logger::operator()(eLogLevel level, std::string const& file, std::string const& func, std::size_t line) {
+  LogMsg Logger::operator()(eLogLevel level, std::string file, std::string func, std::size_t line) {
 
-    return LogMsg(this, level, file, func, line);
+    return LogMsg(this, level, std::move(file), std::move(func), line);
   }
 
 

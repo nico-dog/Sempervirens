@@ -11,6 +11,9 @@
 #include <functional>
 #include <memory>
 
+#include <utils/ActiveQueue.hpp>
+#include <thread>
+
 namespace dog::utils {
 
   class Active {
@@ -20,14 +23,18 @@ namespace dog::utils {
     class ActiveImpl;
     std::unique_ptr<ActiveImpl, void(*)(ActiveImpl*)> _pImpl;
 
+    //void run();
+
+    //bool _done{false};
+    //std::unique_ptr<std::thread> _thd{nullptr};
+    //ActiveQueue<Message_t> _q;
+
   public:
     Active();
     ~Active();
 
     Active(Active const&) = delete;
     Active& operator=(Active const&) = delete;
-    Active(Active&&) = delete;
-    Active& operator=(Active&&) = delete;
 
     void send(Message_t msg);
   };
