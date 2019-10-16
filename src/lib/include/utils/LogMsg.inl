@@ -3,11 +3,11 @@
 
 namespace dog::utils {
   
-  template<typename T>
-  LogMsg& LogMsg::operator<<(T value) {
+  //template<typename T>
+  //LogMsg& LogMsg::operator<<(T value) {
     
-    _buffer << value;
-    return *this;
-  }
+  //  _buffer << value;
+  //  return *this;
+  //}
 }
 #endif

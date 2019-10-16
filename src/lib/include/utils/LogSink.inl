@@ -15,7 +15,7 @@ namespace dog::utils {
   LogSink::model_t<T>::model_t(T data) : _data{std::move(data)} {}
   
   template <typename T>
-  void LogSink::model_t<T>::log_(LogMsg::Meta const& meta, std::string const& msg) const {
+  void LogSink::model_t<T>::_log(LogMsg::Meta const& meta, std::string const& msg) const {
 
     log(_data, meta, msg);
   }

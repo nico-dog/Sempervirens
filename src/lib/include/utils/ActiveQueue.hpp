@@ -26,6 +26,10 @@ namespace dog::utils {
     
   public:
     ActiveQueue() = default;
+    ~ActiveQueue() = default;
+    ActiveQueue(ActiveQueue const&) = delete;
+    ActiveQueue& operator=(ActiveQueue const&) = delete;
+    
     void pop(T&);
     void push(T);
   };

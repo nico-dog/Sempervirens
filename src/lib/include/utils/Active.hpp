@@ -23,12 +23,6 @@ namespace dog::utils {
     class ActiveImpl;
     std::unique_ptr<ActiveImpl, void(*)(ActiveImpl*)> _pImpl;
 
-    //void run();
-
-    //bool _done{false};
-    //std::unique_ptr<std::thread> _thd{nullptr};
-    //ActiveQueue<Message_t> _q;
-
   public:
     Active();
     ~Active();

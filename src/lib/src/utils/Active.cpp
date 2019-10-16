@@ -33,37 +33,14 @@ namespace dog::utils {
   };
   
   Active::Active() : _pImpl{new ActiveImpl{}, [](ActiveImpl* ptr){ delete ptr; }} {}
-  //Active::Active() {
 
-  //  _thd = std::unique_ptr<std::thread>(new std::thread([=]{ this->run(); }));
-  //}
-  
   Active::~Active() {
 
-    //send([&](){ std::cout << "Active dtor, sending done signal\n"; });
     send([&](){ _pImpl->_done = true; });
-
-    //send([&](){ _done = true; });
-    //_thd->join();
-    //_pImpl->_thd->join();
-    //gLog << "Active dtor, sent done signal";
   }
 
   void Active::send(Message_t msg) {
 
     _pImpl->_q.push(msg);
-    //_q.push(msg);
   }
-
-  /*
-  void Active::run() {
-
-    while (!_done)
-    {
-      Message_t msg;
-      _q.pop(msg);
-      msg();
-    } 
-  }
-  */
 }

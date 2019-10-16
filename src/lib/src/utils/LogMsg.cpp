@@ -12,10 +12,17 @@ namespace dog::utils {
     _logger->flush(this); // _logger always outlives LogMsg
   }
 
-  LogMsg& LogMsg::operator<<(std::ostream& (*fn)(std::ostream&)) {
+  //LogMsg& LogMsg::operator<<(std::ostream& (*fn)(std::ostream&)) {
     
-    fn(_buffer);
-    return *this;
+  //  fn(_buffer);
+  //  return *this;
+  //}
+
+  void LogMsg::operator()(std::string msg) {
+    
+    //_buffer << std::move(msg);
+    _msg = std::move(msg);
   }
+  
   
 }

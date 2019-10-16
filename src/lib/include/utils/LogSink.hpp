@@ -30,7 +30,7 @@ namespace dog::utils {
     struct concept_t {
 
       virtual ~concept_t() = default;
-      virtual void log_(LogMsg::Meta const& meta, std::string const& msg) const = 0;
+      virtual void _log(LogMsg::Meta const& meta, std::string const& msg) const = 0;
     };
 
     template <typename T>
@@ -38,7 +38,7 @@ namespace dog::utils {
       
       model_t(T data);
 
-      void log_(LogMsg::Meta const& meta, std::string const& msg) const override;
+      void _log(LogMsg::Meta const& meta, std::string const& msg) const override;
 
       T _data;
     };
@@ -52,7 +52,7 @@ namespace dog::utils {
     friend void log(LogSink const& sink, LogMsg::Meta const&, std::string const& msg);
   };
 
-  // Some helper functions to create common type of sinks
+  // Some helper functions to create common types of sinks
   LogSink makeConsoleSink();
   
   class FileSink {

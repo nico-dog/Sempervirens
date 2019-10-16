@@ -17,7 +17,7 @@ namespace dog::utils {
   template <typename T>
   void ActiveQueue<T>::push(T msg) {
 
-    if(lock_t lock{_mutex}; true) _q.push_back(std::move(msg));
+    if (lock_t lock{_mutex}; true) _q.push_back(std::move(msg));
     _ready.notify_one();
   }
 }

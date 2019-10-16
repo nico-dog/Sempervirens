@@ -36,16 +36,19 @@ namespace dog::utils {
 
     Logger* _logger;
     Meta _meta;
-    std::ostringstream _buffer;
+    //std::ostringstream _buffer;
+    std::string _msg;
 
   public:
     ~LogMsg();
     LogMsg& operator=(LogMsg const&) = delete;
 
-    template<typename T>
-    LogMsg& operator<<(T value);
+    void operator()(std::string msg);
 
-    LogMsg& operator<<(std::ostream& (*fn)(std::ostream&));
+    //template<typename T>
+    //LogMsg& operator<<(T value);
+
+    //LogMsg& operator<<(std::ostream& (*fn)(std::ostream&));
   };
 }
 #include <utils/LogMsg.inl>

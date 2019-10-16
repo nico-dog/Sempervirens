@@ -12,33 +12,35 @@ namespace dog::utils {
     LoggerImpl() = default;
     ~LoggerImpl() = default;
 
-    std::vector<LogSink> _sinks;
-    Active _active;
     //std::vector<LogSink> _sinks;
+    std::array<LogSink, 2> _sinks = {makeConsoleSink(),
+				     makeFileSink("/home/nico/Desktop/dog.log")};   
+    Active _active;  // Needs to be declared last for proper order of destruction
   };
 
   Logger::Logger() : _pImpl{new LoggerImpl{}, [](LoggerImpl* ptr){ delete ptr; }} {
     
-    addSink(makeConsoleSink());
-    addSink(makeFileSink("/home/nico/Desktop/dog.log"));
+    //addSink(makeConsoleSink());
+    //addSink(makeFileSink("/home/nico/Desktop/dog.log"));
   }
 
-  void Logger::addSink(LogSink sink) {
+  //void Logger::addSink(LogSink sink) {
 
-    _pImpl->_sinks.push_back(std::move(sink));
-  }
-
+    //_pImpl->_sinks.push_back(std::move(sink));
+  //}
+  
   void Logger::flush(LogMsg const* logMsg) {
 
-    auto meta = std::move(logMsg->_meta);
-    auto msg = std::move(logMsg->_buffer.str());
-    _pImpl->_active.send([this, _meta{std::move(meta)}, _msg{std::move(msg)}]()
+    _pImpl->_active.send([this,
+			  _meta{std::move(logMsg->_meta)},
+			  //_msg{std::move(logMsg->_buffer.str())}]()
+			  _msg{std::move(logMsg->_msg)}]()
 			 { for (auto const& sink : _pImpl->_sinks) log(sink, _meta, _msg); });
   }
 
   LogMsg Logger::operator()(eLogLevel level, std::string file, std::string func, std::size_t line) {
 
-    return LogMsg(this, level, std::move(file), std::move(func), line);
+    return {this, level, std::move(file), std::move(func), line};
   }
 
 

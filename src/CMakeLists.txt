@@ -8,9 +8,6 @@ project(Sempervirens VERSION 1.0 LANGUAGES C CXX)
 #***************************************
 include(GNUInstallDirs) 
 
-# To replace extra -std=gnu++11 that overwrites target_compile_options with -std=gnu++1z
-# set(CMAKE_CXX_STANDARD 17) 
-
 #***************************************
 #
 # Import targets here

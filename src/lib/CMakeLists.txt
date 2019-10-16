@@ -43,19 +43,24 @@ target_compile_features(doglib
 # platform macros
 if(UNIX)
 target_compile_definitions(doglib
-  PRIVATE LINUX=1)
+  PUBLIC LINUX=1)
 endif()
 
-# product macros
-if(${--build_unit_test})
+# build macros
+if(${build_unit_tests})
 target_compile_definitions(doglib
-  PRIVATE UNITTEST_BUILD=1)
+  PUBLIC BUILD_UNITTEST=1)
+endif()
+if(${build_logging})
+target_compile_definitions(doglib
+  PUBLIC BUILD_LOGGING=1)
+message(STATUS "set logging flag to ${build_logging}")
 endif()
 
 # feature macros
-if(${--feature_thread_affinity})
+if(${feature_thread_affinity})
 target_compile_definitions(doglib
-  PRIVATE THREAD_AFFINITY=1)
+  PUBLIC FEATURE_THREAD_AFFINITY=1)
 endif()
 
 #***************************************
