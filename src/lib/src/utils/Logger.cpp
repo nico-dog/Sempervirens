@@ -33,7 +33,6 @@ namespace dog::utils {
 
     _pImpl->_active.send([this,
 			  _meta{std::move(logMsg->_meta)},
-			  //_msg{std::move(logMsg->_buffer.str())}]()
 			  _msg{std::move(logMsg->_msg)}]()
 			 { for (auto const& sink : _pImpl->_sinks) log(sink, _meta, _msg); });
   }
@@ -44,14 +43,15 @@ namespace dog::utils {
   }
 
 
-//#if UDMX_PRODUCT(UNITTEST_BUILD)
-//  void Logger::test()
-//  {
-//    gLog << "Message log";
-//    gLogDebug << "Debug log";
-//    gLogWarning << "Warning log";
-//    gLogError << "Error log";
-//    gLogFatal << "Fatal log" << std::endl;
-//  }
-//#endif  
+#if DOG_BUILD(UNITTESTS)
+  void Logger::test() {
+
+    auto i = 2;
+    DOG_LOGMSG("i has value " << i);
+    DOG_LOGDBG("i has value " << i);
+    DOG_LOGWRN("i has value " << i);
+    DOG_LOGERR("i has value " << i);
+    DOG_LOGFAT("i has value " << i);  
+  }
+#endif  
 }

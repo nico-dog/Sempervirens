@@ -57,7 +57,7 @@ namespace dog::utils {
     template<typename T>
     LogSinkUptr(T impl);
     
-    LogSinkUptr(LogSink const&);
+    LogSinkUptr(LogSinkUptr const&);
     LogSinkUptr(LogSinkUptr&&) noexcept = default;
     LogSinkUptr& operator=(LogSinkUptr const& logSinkUptr)
     {

@@ -3,16 +3,14 @@
 
 namespace dog::utils {
 
-  // Generic non-friend non-member log function
   template <typename T>
   void log(T const& sink, LogMsg::Meta const& meta, std::string const& msg) {
 
     sink(meta, msg);
   }
 
-  // model
   template <typename T>
-  LogSink::model_t<T>::model_t(T data) : _data{std::move(data)} {}
+  LogSink::model_t<T>::model_t(T&& data) : _data{std::forward<T>(data)} {}
   
   template <typename T>
   void LogSink::model_t<T>::_log(LogMsg::Meta const& meta, std::string const& msg) const {
@@ -20,8 +18,7 @@ namespace dog::utils {
     log(_data, meta, msg);
   }
 
-  // wrapper
   template <typename T>
-  LogSink::LogSink(T impl) : _self(std::make_shared<model_t<T>>(std::move(impl))) {}
+  LogSink::LogSink(T&& impl) : _self(std::make_shared<model_t<T>>(std::forward<T>(impl))) {}
 }
 #endif

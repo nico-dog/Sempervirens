@@ -6,7 +6,7 @@
 // runtime polymorphism.
 // LogSink holds a shared_ptr to the underlying concept.
 // The model implements the concept and holds the actual sink type.
-// The model derives overrides the concept log method.
+// The model overrides the concept log method.
 
 // 1) The log friend function takes a LogSink and log message data as argument
 // 2) It calls the log_ method of the underlying model taking the log message data as argument
@@ -14,7 +14,7 @@
 // i.e. log(LogSink const&, msg) => model->log_(msg) => log(sink type, msg)
 //
 // Any sink type can be stored as a LogSink as long as we provide the corresponding free function.
-// Sinking should be done with a call operator, so it is enough to provide a single generic free function for all sink types.
+// Sinking is be done with a call operator, so it is enough to provide a single generic free function for all sink types.
 //
 //***************************************************
 #ifndef LOGSINK_HPP
@@ -36,7 +36,7 @@ namespace dog::utils {
     template <typename T>
     struct model_t final : public concept_t {
       
-      model_t(T data);
+      model_t(T&& data);
 
       void _log(LogMsg::Meta const& meta, std::string const& msg) const override;
 
@@ -47,7 +47,7 @@ namespace dog::utils {
     
   public:
     template<typename T>
-    LogSink(T impl);
+    LogSink(T&& impl);
 
     friend void log(LogSink const& sink, LogMsg::Meta const&, std::string const& msg);
   };

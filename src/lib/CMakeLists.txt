@@ -10,7 +10,9 @@ add_library(doglib SHARED
   src/utils/Logger.cpp
   src/utils/LogMsg.cpp
   src/utils/LogLevel.cpp
-  src/utils/LogSink.cpp)
+  src/utils/LogSink.cpp
+  src/utils/UnitTest.cpp
+  src/utils/UnitTestRegister.cpp)
 
 target_include_directories(doglib
   PUBLIC
@@ -32,7 +34,7 @@ target_compile_options(doglib
 #
 #***************************************
 target_compile_features(doglib
-  PRIVATE
+  PUBLIC
   cxx_std_17)
 
 #***************************************
@@ -49,7 +51,7 @@ endif()
 # build macros
 if(${build_unit_tests})
 target_compile_definitions(doglib
-  PUBLIC BUILD_UNITTEST=1)
+  PUBLIC BUILD_UNITTESTS=1)
 endif()
 if(${build_logging})
 target_compile_definitions(doglib
@@ -102,3 +104,9 @@ add_executable(logger
 target_link_libraries(logger
   doglib)
 add_test(NAME logger-test COMMAND logger)
+
+add_executable(register
+  test/UnitTestRegisterTest.cpp)
+target_link_libraries(register
+  doglib)
+add_test(NAME register-test COMMAND register)

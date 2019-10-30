@@ -1,9 +1,13 @@
 #include <utils/Logger.hpp>
+#include <utils/UnitTestRegister.hpp>
 
 int main() {
 
-  auto i = 2;
-  DOG_LOGMSG("the value of i is " << i);
+  auto reg = dog::utils::UnitTestRegister{};
+
+  reg.push(DOG_TESTTYPE(dog::utils::Logger));
+
+  reg.run();
 
   return 0;
 }
