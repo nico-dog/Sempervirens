@@ -8,13 +8,12 @@
 //***************************************************
 #ifndef ACTIVE_HPP
 #define ACTIVE_HPP
+#include <Logging/ActiveQueue.hpp>
 #include <functional>
 #include <memory>
-
-#include <utils/ActiveQueue.hpp>
 #include <thread>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   class Active {
 

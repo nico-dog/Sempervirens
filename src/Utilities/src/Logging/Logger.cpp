@@ -1,10 +1,10 @@
 #define LOGGER_CPP
-#include <utils/Logger.hpp>
-#include <utils/LogSink.hpp>
-#include <utils/Active.hpp>
+#include <Logging/Logger.hpp>
+#include <Logging/LogSink.hpp>
+#include <Logging/Active.hpp>
 #include <vector>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   class Logger::LoggerImpl {
 

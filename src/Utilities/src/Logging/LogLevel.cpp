@@ -1,9 +1,9 @@
 #define LOGLEVEL_CPP
-#include <utils/LogLevel.hpp>
+#include <Logging/LogLevel.hpp>
 
 std::ostream& operator<<(std::ostream& os, dog::utils::eLogLevel const& level) {
 
-  using dog::utils::eLogLevel;  
+  using dog::utilities::logging::eLogLevel;  
 
   switch(level)
   {   

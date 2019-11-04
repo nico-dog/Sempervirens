@@ -9,7 +9,7 @@
 #ifndef SINGLETON_HPP
 #define SINGLETON_HPP
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   template<typename T>
   class Singleton {
@@ -25,5 +25,5 @@ namespace dog::utils {
   };
 }
 
-#include <utils/Singleton.inl>
+#include <Logging/Singleton.inl>
 #endif

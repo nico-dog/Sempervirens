@@ -9,11 +9,11 @@
 //***************************************************
 #ifndef LOGMSG_HPP
 #define LOGMSG_HPP
-#include <utils/LogLevel.hpp>
+#include <Logging/LogLevel.hpp>
 #include <string>
 #include <sstream>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   class Logger;
   
@@ -36,7 +36,6 @@ namespace dog::utils {
 
     Logger* _logger;
     Meta _meta;
-    //std::ostringstream _buffer;
     std::string _msg;
 
   public:
@@ -44,12 +43,6 @@ namespace dog::utils {
     LogMsg& operator=(LogMsg const&) = delete;
 
     void operator()(std::string msg);
-
-    //template<typename T>
-    //LogMsg& operator<<(T value);
-
-    //LogMsg& operator<<(std::ostream& (*fn)(std::ostream&));
   };
 }
-#include <utils/LogMsg.inl>
 #endif

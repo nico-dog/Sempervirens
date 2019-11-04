@@ -1,9 +1,9 @@
 #define ACTIVE_CPP
-#include <utils/Active.hpp>
-#include <utils/ActiveQueue.hpp>
+#include <Logging/Active.hpp>
+#include <Logging/ActiveQueue.hpp>
 #include <thread>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   class Active::ActiveImpl {
 

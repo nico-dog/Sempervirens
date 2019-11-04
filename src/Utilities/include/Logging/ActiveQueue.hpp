@@ -13,7 +13,7 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   template <typename T>
   class ActiveQueue {
@@ -34,5 +34,5 @@ namespace dog::utils {
     void push(T);
   };
 }
-#include <utils/ActiveQueue.inl>
+#include <Logging/ActiveQueue.inl>
 #endif

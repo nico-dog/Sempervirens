@@ -1,7 +1,7 @@
 #ifndef UNITTEST_INL
 #define UNITTEST_INL
 
-namespace dog::utils {
+namespace dog::utilities::unittesting {
 
   template<typename T>
   void test(T const& unitTest) {

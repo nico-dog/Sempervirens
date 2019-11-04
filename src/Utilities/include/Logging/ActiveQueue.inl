@@ -1,7 +1,7 @@
 #ifndef ACTIVEQUEUE_INL
 #define ACTIVEQUEUE_INL
 
-namespace dog::utils {
+namespace dog::utilities::logging {
   
   template <typename T>
   void ActiveQueue<T>::pop(T& msg) {

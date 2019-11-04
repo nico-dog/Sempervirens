@@ -2,29 +2,32 @@ project(lib VERSION 0.1 LANGUAGES CXX)
 
 #***************************************
 #
-# Define target src/includes
+# Define target
 #
 #***************************************
-add_library(doglib SHARED
-  src/utils/Active.cpp
-  src/utils/Logger.cpp
-  src/utils/LogMsg.cpp
-  src/utils/LogLevel.cpp
-  src/utils/LogSink.cpp
-  src/utils/UnitTest.cpp
-  src/utils/UnitTestRegister.cpp)
+add_library(utilitieslib STATIC
+  src/Logging/Active.cpp
+  src/Logging/Logger.cpp
+  src/Logging/LogMsg.cpp
+  src/Logging/LogLevel.cpp
+  src/Logging/LogSink.cpp
+  src/UnitTesting/UnitTest.cpp
+  src/UnitTesting/UnitTestRegister.cpp)
 
-target_include_directories(doglib
+target_include_directories(utilitieslib
   PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include)
+#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include, ${CMAKE_CURRENT_SOURCE_DIR}/../App>)  
 #  $<INSTALL_INTERFACE:include>)
+
+message(STATUS "******** dir = ${CMAKE_CURRENT_SOURCE_DIR}")
 
 #***************************************
 #
 # Set target compile options
 #
 #***************************************
-target_compile_options(doglib
+target_compile_options(utilitieslib
   PRIVATE
   -Wall -O2)
 
@@ -33,7 +36,7 @@ target_compile_options(doglib
 # Set target compile features
 #
 #***************************************
-target_compile_features(doglib
+target_compile_features(utilitieslib
   PUBLIC
   cxx_std_17)
 
@@ -44,24 +47,24 @@ target_compile_features(doglib
 #***************************************
 # platform macros
 if(UNIX)
-target_compile_definitions(doglib
+target_compile_definitions(utilitieslib
   PUBLIC LINUX=1)
 endif()
 
 # build macros
 if(${build_unit_tests})
-target_compile_definitions(doglib
+target_compile_definitions(utilitieslib
   PUBLIC BUILD_UNITTESTS=1)
 endif()
 if(${build_logging})
-target_compile_definitions(doglib
+target_compile_definitions(utilitieslib
   PUBLIC BUILD_LOGGING=1)
 message(STATUS "set logging flag to ${build_logging}")
 endif()
 
 # feature macros
 if(${feature_thread_affinity})
-target_compile_definitions(doglib
+target_compile_definitions(utilitieslib
   PUBLIC FEATURE_THREAD_AFFINITY=1)
 endif()
 
@@ -70,7 +73,7 @@ endif()
 # Link to imported targets
 #
 #***************************************
-target_link_libraries(doglib
+target_link_libraries(utilitieslib
   PUBLIC
   Threads::Threads)
 #  pthread)
@@ -81,18 +84,18 @@ target_link_libraries(doglib
 #
 #***************************************
 # 'make install' to the correct locations (provided by GNUInstallDirs)
-#install(TARGETS doglib
-#  EXPORT DoGLibConfig
+#install(TARGETS utilitieslib
+#  EXPORT UtilitieslibConfig
 #  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 #  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 ## RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 #install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # This makes the project importable from the install directory
-#install(EXPORT DoGLibConfig DESTINATION share/DoGLib/cmake)
+#install(EXPORT UtilitieslibConfig DESTINATION share/Utilitieslib/cmake)
 
 # This makes the project importable from the build directory
-#export(TARGETS doglib FILE DoGLibConfig.cmake)
+#export(TARGETS utilitieslib FILE UtilitieslibConfig.cmake)
 
 #***************************************
 #
@@ -102,11 +105,11 @@ target_link_libraries(doglib
 add_executable(logger
   test/LoggerTest.cpp)
 target_link_libraries(logger
-  doglib)
+  utilitieslib)
 add_test(NAME logger-test COMMAND logger)
 
 add_executable(register
   test/UnitTestRegisterTest.cpp)
 target_link_libraries(register
-  doglib)
+  utilitieslib)
 add_test(NAME register-test COMMAND register)

@@ -1,8 +1,8 @@
 #define UNITTESTREGISTER_CPP
-#include <utils/UnitTestRegister.hpp>
+#include <UnitTesting/UnitTestRegister.hpp>
 #include <vector>
 
-namespace dog::utils {
+namespace dog::utilities::unittesting {
 
   class UnitTestRegister::UnitTestRegisterImpl {
 

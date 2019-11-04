@@ -10,14 +10,14 @@
 //***************************************************
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
-#include <macros/Build.hpp>
-#include <utils/Singleton.hpp>
-#include <utils/LogMsg.hpp> 
-#include <utils/LogLevel.hpp> 
+#include <Build/Build.hpp>
+#include <Logging/Singleton.hpp>
+#include <Logging/LogMsg.hpp> 
+#include <Logging/LogLevel.hpp> 
 #include <memory>
 #include <cstring>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   class LogSink;
   
@@ -49,18 +49,18 @@ namespace dog::utils {
 // Macros to create empty-buffer messages with proper log levels
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #if DOG_BUILD(LOGGING)
-#define DOG_LOG(level, msg) (			\
-  dog::utils::Logger::instance()(		\
-    dog::utils::eLogLevel::level,		\
-    __FILENAME__,				\
-    __PRETTY_FUNCTION__,			\
-    __LINE__					\
-  )			                        \
-  (						\
-    static_cast<std::ostringstream&>(		\
-      std::ostringstream().flush() << msg       \
-    ).str()	                                \
-  )                                             \
+#define DOG_LOG(level, msg) (			 \
+    dog::utilities::Logging::Logger::instance()( \
+    dog::utilities::Logging::eLogLevel::level,   \
+    __FILENAME__,				 \
+    __PRETTY_FUNCTION__,			 \
+    __LINE__					 \
+  )                                              \
+  (						 \
+    static_cast<std::ostringstream&>(		 \
+      std::ostringstream().flush() << msg        \
+    ).str()	                                 \
+  )                                              \
 )
 #else
 #define DOG_LOG(level, msg) do {} while(0)

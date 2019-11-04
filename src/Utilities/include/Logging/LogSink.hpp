@@ -19,11 +19,11 @@
 //***************************************************
 #ifndef LOGSINK_HPP
 #define LOGSINK_HPP
-#include <utils/LogMsg.hpp>
+#include <Logging/LogMsg.hpp>
 #include <memory>
 #include <fstream>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   class LogSink {
 
@@ -71,5 +71,5 @@ namespace dog::utils {
   
   LogSink makeFileSink(std::string const& filename);
 }
-#include <utils/LogSink.inl>
+#include <Logging/LogSink.inl>
 #endif

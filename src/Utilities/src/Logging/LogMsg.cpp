@@ -1,8 +1,8 @@
 #define LOGMSG_CPP
-#include <utils/LogMsg.hpp>
-#include <utils/Logger.hpp>
+#include <Logging/LogMsg.hpp>
+#include <Logging/Logger.hpp>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   LogMsg::LogMsg(Logger* logger, eLogLevel level, std::string file, std::string func, std::size_t line) :
     _logger{logger}, _meta{level, std::move(file), std::move(func), line} {}

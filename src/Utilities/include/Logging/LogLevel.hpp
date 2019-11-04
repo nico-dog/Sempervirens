@@ -6,10 +6,9 @@
 //***************************************************
 #ifndef LOGLEVEL_HPP
 #define LOGLEVEL_HPP
-
 #include <ostream>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   enum class eLogLevel {
     MSG, // Simple message

@@ -1,7 +1,7 @@
 #define UNITTEST_CPP
-#include <utils/UnitTest.hpp>
+#include <UnitTesting/UnitTest.hpp>
 
-namespace dog::utils {
+namespace dog::utilities::unittesting {
 
   void test(UnitTest const& unitTest)
   {

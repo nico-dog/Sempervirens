@@ -1,13 +1,13 @@
 #define LOGSINK_CPP
-#include <utils/LogSink.hpp>
-#include <utils/LogMsg.hpp>
-#include <utils/Logger.hpp>
+#include <Logging/LogSink.hpp>
+#include <Logging/LogMsg.hpp>
+#include <Logging/Logger.hpp>
 #include <iostream>
 #include <chrono>
 #include <ctime>
 #include <iomanip>
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   void log(LogSink const& sink, LogMsg::Meta const& meta, std::string const& msg) {
 

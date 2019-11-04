@@ -1,7 +1,7 @@
 #ifndef LOGSINK_INL
 #define LOGSINK_INL
 
-namespace dog::utils {
+namespace dog::utilities::logging {
 
   template <typename T>
   void log(T const& sink, LogMsg::Meta const& meta, std::string const& msg) {

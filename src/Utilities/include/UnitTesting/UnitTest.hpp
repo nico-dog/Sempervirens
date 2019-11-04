@@ -1,9 +1,8 @@
 #ifndef UNITTEST_HPP
 #define UNITTEST_HPP
-
 #include <memory>
 
-namespace dog::utils {
+namespace dog::utilities::unittesting {
 
   class UnitTest {
 
@@ -40,5 +39,5 @@ namespace dog::utils {
   template<typename F, typename... Args>
   UnitTest createUnitTest(F&& func, Args&&... args);
 }
-#include <utils/UnitTest.inl>
+#include <UnitTesting/UnitTest.inl>
 #endif
