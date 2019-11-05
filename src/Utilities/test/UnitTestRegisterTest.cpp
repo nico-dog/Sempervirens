@@ -1,5 +1,5 @@
-#include <utils/UnitTestRegister.hpp>
-#include <utils/Logger.hpp>
+#include <UnitTesting/UnitTestRegister.hpp>
+#include <Logging/Logger.hpp>
 #include <fstream>
 
 class TestableType {
@@ -51,7 +51,7 @@ public:
 
 int main() {
   
-  auto reg = dog::utils::UnitTestRegister();
+  auto reg = dog::utilities::unittesting::UnitTestRegister();
 
   // push test for type providing a static test() method
   reg.push(DOG_TESTTYPE(TestableType));

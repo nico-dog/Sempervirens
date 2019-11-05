@@ -50,8 +50,8 @@ namespace dog::utilities::logging {
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #if DOG_BUILD(LOGGING)
 #define DOG_LOG(level, msg) (			 \
-    dog::utilities::Logging::Logger::instance()( \
-    dog::utilities::Logging::eLogLevel::level,   \
+    dog::utilities::logging::Logger::instance()( \
+    dog::utilities::logging::eLogLevel::level,   \
     __FILENAME__,				 \
     __PRETTY_FUNCTION__,			 \
     __LINE__					 \

@@ -1,6 +1,7 @@
 #ifndef UNITTESTREGISTER_HPP
 #define UNITTESTREGISTER_HPP
 #include <UnitTesting/UnitTest.hpp>
+#include <Build/Build.hpp>
 #include <memory>
 
 #define DOG_TESTTYPE(type) [](){ type::test(); }

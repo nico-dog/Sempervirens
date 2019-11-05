@@ -1,7 +1,7 @@
 #define LOGLEVEL_CPP
 #include <Logging/LogLevel.hpp>
 
-std::ostream& operator<<(std::ostream& os, dog::utils::eLogLevel const& level) {
+std::ostream& operator<<(std::ostream& os, dog::utilities::logging::eLogLevel const& level) {
 
   using dog::utilities::logging::eLogLevel;  
 

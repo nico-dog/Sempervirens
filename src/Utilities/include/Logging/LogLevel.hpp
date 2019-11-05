@@ -19,6 +19,6 @@ namespace dog::utilities::logging {
   };
 }
 
-std::ostream& operator<<(std::ostream& os, dog::utils::eLogLevel const& level);
+std::ostream& operator<<(std::ostream& os, dog::utilities::logging::eLogLevel const& level);
 
 #endif

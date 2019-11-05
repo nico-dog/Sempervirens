@@ -1,4 +1,4 @@
-project(lib VERSION 0.1 LANGUAGES CXX)
+project(utilitieslib VERSION 1.0 LANGUAGES CXX)
 
 #***************************************
 #
@@ -16,11 +16,9 @@ add_library(utilitieslib STATIC
 
 target_include_directories(utilitieslib
   PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include)
-#  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include, ${CMAKE_CURRENT_SOURCE_DIR}/../App>)  
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../App>)  
 #  $<INSTALL_INTERFACE:include>)
-
-message(STATUS "******** dir = ${CMAKE_CURRENT_SOURCE_DIR}")
 
 #***************************************
 #
@@ -55,11 +53,12 @@ endif()
 if(${build_unit_tests})
 target_compile_definitions(utilitieslib
   PUBLIC BUILD_UNITTESTS=1)
+message(STATUS "App is build with unit testing")  
 endif()
 if(${build_logging})
 target_compile_definitions(utilitieslib
   PUBLIC BUILD_LOGGING=1)
-message(STATUS "set logging flag to ${build_logging}")
+message(STATUS "App is build with logging")
 endif()
 
 # feature macros
@@ -102,6 +101,7 @@ target_link_libraries(utilitieslib
 # Define tests for CTest
 #
 #***************************************
+if(${build_unit_tests})
 add_executable(logger
   test/LoggerTest.cpp)
 target_link_libraries(logger
@@ -113,3 +113,4 @@ add_executable(register
 target_link_libraries(register
   utilitieslib)
 add_test(NAME register-test COMMAND register)
+endif()

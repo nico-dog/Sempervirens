@@ -1,11 +1,11 @@
-#include <utils/Logger.hpp>
-#include <utils/UnitTestRegister.hpp>
+#include <Logging/Logger.hpp>
+#include <UnitTesting/UnitTestRegister.hpp>
 
 int main() {
 
-  auto reg = dog::utils::UnitTestRegister{};
+  auto reg = dog::utilities::unittesting::UnitTestRegister{};
 
-  reg.push(DOG_TESTTYPE(dog::utils::Logger));
+  reg.push(DOG_TESTTYPE(dog::utilities::logging::Logger));
 
   reg.run();
 
