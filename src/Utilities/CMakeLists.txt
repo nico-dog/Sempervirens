@@ -1,4 +1,4 @@
-project(utilitieslib VERSION 1.0 LANGUAGES CXX)
+project(utilities VERSION 1.0 LANGUAGES CXX)
 
 #***************************************
 #
@@ -27,7 +27,7 @@ target_include_directories(utilitieslib
 #***************************************
 target_compile_options(utilitieslib
   PRIVATE
-  -Wall -O2)
+  -Wall -O2 -fPIC)
 
 #***************************************
 #

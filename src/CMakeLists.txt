@@ -29,3 +29,4 @@ enable_testing()
 #
 #***************************************
 add_subdirectory(Utilities)
+add_subdirectory(Graphics)
