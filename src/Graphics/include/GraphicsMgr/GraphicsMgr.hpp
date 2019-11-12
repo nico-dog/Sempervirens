@@ -1,28 +1,23 @@
 #ifndef GRAPHICSMGR_HPP
 #define GRAPHICSMGR_HPP
+#include <DynamicLibs/DynamicLibs.hpp>
+#include <memory>
 
 namespace dog::graphics::mgr {
 
-#if defined(__unix__)
-  using DLib = void*;
-#endif
-  
   class IGraphicsRenderer;
 
   class GraphicsMgr {
 
-    DLib _graphicsLib;
-    IGraphicsRenderer* _renderer{nullptr};
+    dog::app::dlibs::dlib_t _graphicsLib;
     
   public:
     GraphicsMgr() = default;
     ~GraphicsMgr();
 
-    void load();
-    void createRenderer();
-    void release(); // destroy renderer + unloads dynamic lib
-
-    IGraphicsRenderer* renderer();
+    bool load(std::string libname);
+    std::shared_ptr<IGraphicsRenderer> createRenderer();
+    void release(); 
   };
 }
 #endif

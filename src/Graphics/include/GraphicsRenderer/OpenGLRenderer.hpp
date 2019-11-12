@@ -7,6 +7,8 @@ namespace dog::graphics::renderer {
   class OpenGLRenderer final : public IGraphicsRenderer {
 
   public:
+    OpenGLRenderer();
+    ~OpenGLRenderer();
     void render() override;
   };
 }

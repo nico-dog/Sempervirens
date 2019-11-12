@@ -5,35 +5,39 @@ project(graphics VERSION 1.0 LANGUAGES CXX)
 # Define target
 #
 #***************************************
-add_library(graphicsmgrlib STATIC
-  src/GraphicsMgr/GraphicsMgr.cpp)
+if(UNIX)
+add_library(graphicsmgr STATIC
+  src/GraphicsMgr/GraphicsMgr.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../App/src/DynamicLibs/DynamicLibs_unix.cpp
+)
+endif()
 
-target_include_directories(graphicsmgrlib
+target_include_directories(graphicsmgr
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Utilities/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../App>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../App/include>)
 
-add_library(graphicslib SHARED
+add_library(graphicsogl SHARED
   src/GraphicsRenderer/IGraphicsRenderer.cpp
   src/GraphicsRenderer/OpenGLRenderer.cpp)
 
-target_include_directories(graphicslib
+target_include_directories(graphicsogl
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Utilities/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../App>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../App/include>)
   
 #***************************************
 #
 # Set target compile options
 #
 #***************************************
-target_compile_options(graphicsmgrlib
+target_compile_options(graphicsmgr
   PRIVATE
   -Wall -O2)
   
-target_compile_options(graphicslib
+target_compile_options(graphicsogl
   PRIVATE
   -Wall -O2)
   
@@ -42,11 +46,11 @@ target_compile_options(graphicslib
 # Set target compile features
 #
 #***************************************
-target_compile_features(graphicsmgrlib
+target_compile_features(graphicsmgr
   PUBLIC
   cxx_std_17)
 
-target_compile_features(graphicslib
+target_compile_features(graphicsogl
   PUBLIC
   cxx_std_17)
   
@@ -55,35 +59,35 @@ target_compile_features(graphicslib
 # Set target compile definitions
 #
 #***************************************
-# platform macros
+# platform macros (UNIX, WIN32, APPLE)
 if(UNIX)
-target_compile_definitions(graphicsmgrlib
-  PUBLIC LINUX=1)
-target_compile_definitions(graphicslib
-  PUBLIC LINUX=1)  
+target_compile_definitions(graphicsmgr
+  PUBLIC PLATFORM_UNIX=1)
+target_compile_definitions(graphicsogl
+  PUBLIC PLATFORM_UNIX=1)  
 endif()
 
 # build macros
 if(${build_unit_tests})
-target_compile_definitions(graphicsmgrlib
+target_compile_definitions(graphicsmgr
   PUBLIC BUILD_UNITTESTS=1)
-target_compile_definitions(graphicslib
+target_compile_definitions(graphicsogl
   PUBLIC BUILD_UNITTESTS=1)  
 message(STATUS "App is build with unit testing")  
 endif()
 if(${build_logging})
-target_compile_definitions(graphicsmgrlib
+target_compile_definitions(graphicsmgr
   PUBLIC BUILD_LOGGING=1)
-target_compile_definitions(graphicslib
+target_compile_definitions(graphicsogl
   PUBLIC BUILD_LOGGING=1)  
 message(STATUS "App is build with logging")
 endif()
 
 # feature macros
 if(${feature_thread_affinity})
-target_compile_definitions(graphicsmgrlib
+target_compile_definitions(graphicsmgr
   PUBLIC FEATURE_THREAD_AFFINITY=1)
-target_compile_definitions(graphicslib
+target_compile_definitions(graphicsogl
   PUBLIC FEATURE_THREAD_AFFINITY=1)  
 endif()
 
@@ -92,13 +96,14 @@ endif()
 # Link to imported targets
 #
 #***************************************
-target_link_libraries(graphicsmgrlib
+target_link_libraries(graphicsmgr
   PUBLIC
-  utilitieslib)
+  ${CMAKE_DL_LIBS} # usually -ldl on unix platforms
+  utilities)
   
-target_link_libraries(graphicslib
+target_link_libraries(graphicsogl
   PUBLIC
-  utilitieslib)
+  utilities)
 
 #  Threads::Threads)
 #  pthread)
@@ -128,9 +133,9 @@ target_link_libraries(graphicslib
 #
 #***************************************
 if(${build_unit_tests})
-add_executable(graphicsmgr
+add_executable(graphics
   test/GraphicsMgrTest.cpp)
-target_link_libraries(graphicsmgr
-  graphicsmgrlib)
-add_test(NAME graphicsmgr-test COMMAND graphicsmgr)
+target_link_libraries(graphics
+  graphicsmgr)
+add_test(NAME graphics-test COMMAND graphics)
 endif()

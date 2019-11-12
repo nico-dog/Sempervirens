@@ -5,7 +5,7 @@ project(utilities VERSION 1.0 LANGUAGES CXX)
 # Define target
 #
 #***************************************
-add_library(utilitieslib STATIC
+add_library(utilities STATIC
   src/Logging/Active.cpp
   src/Logging/Logger.cpp
   src/Logging/LogMsg.cpp
@@ -14,10 +14,10 @@ add_library(utilitieslib STATIC
   src/UnitTesting/UnitTest.cpp
   src/UnitTesting/UnitTestRegister.cpp)
 
-target_include_directories(utilitieslib
+target_include_directories(utilities
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../App>)  
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../App/include>)  
 #  $<INSTALL_INTERFACE:include>)
 
 #***************************************
@@ -25,7 +25,7 @@ target_include_directories(utilitieslib
 # Set target compile options
 #
 #***************************************
-target_compile_options(utilitieslib
+target_compile_options(utilities
   PRIVATE
   -Wall -O2 -fPIC)
 
@@ -34,7 +34,7 @@ target_compile_options(utilitieslib
 # Set target compile features
 #
 #***************************************
-target_compile_features(utilitieslib
+target_compile_features(utilities
   PUBLIC
   cxx_std_17)
 
@@ -43,27 +43,27 @@ target_compile_features(utilitieslib
 # Set target compile definitions
 #
 #***************************************
-# platform macros
+# platform macros (UNIX, WIN32, APPLE)
 if(UNIX)
-target_compile_definitions(utilitieslib
-  PUBLIC LINUX=1)
+target_compile_definitions(utilities
+  PUBLIC PLATFORM_UNIX=1)
 endif()
 
 # build macros
 if(${build_unit_tests})
-target_compile_definitions(utilitieslib
+target_compile_definitions(utilities
   PUBLIC BUILD_UNITTESTS=1)
 message(STATUS "App is build with unit testing")  
 endif()
 if(${build_logging})
-target_compile_definitions(utilitieslib
+target_compile_definitions(utilities
   PUBLIC BUILD_LOGGING=1)
 message(STATUS "App is build with logging")
 endif()
 
 # feature macros
 if(${feature_thread_affinity})
-target_compile_definitions(utilitieslib
+target_compile_definitions(utilities
   PUBLIC FEATURE_THREAD_AFFINITY=1)
 endif()
 
@@ -72,7 +72,7 @@ endif()
 # Link to imported targets
 #
 #***************************************
-target_link_libraries(utilitieslib
+target_link_libraries(utilities
   PUBLIC
   Threads::Threads)
 #  pthread)
@@ -83,18 +83,18 @@ target_link_libraries(utilitieslib
 #
 #***************************************
 # 'make install' to the correct locations (provided by GNUInstallDirs)
-#install(TARGETS utilitieslib
-#  EXPORT UtilitieslibConfig
+#install(TARGETS utilities
+#  EXPORT UtilitiesConfig
 #  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 #  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 ## RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 #install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # This makes the project importable from the install directory
-#install(EXPORT UtilitieslibConfig DESTINATION share/Utilitieslib/cmake)
+#install(EXPORT UtilitiesConfig DESTINATION share/Utilities/cmake)
 
 # This makes the project importable from the build directory
-#export(TARGETS utilitieslib FILE UtilitieslibConfig.cmake)
+#export(TARGETS utilities FILE UtilitiesConfig.cmake)
 
 #***************************************
 #
@@ -105,12 +105,12 @@ if(${build_unit_tests})
 add_executable(logger
   test/LoggerTest.cpp)
 target_link_libraries(logger
-  utilitieslib)
+  utilities)
 add_test(NAME logger-test COMMAND logger)
 
 add_executable(register
   test/UnitTestRegisterTest.cpp)
 target_link_libraries(register
-  utilitieslib)
+  utilities)
 add_test(NAME register-test COMMAND register)
 endif()

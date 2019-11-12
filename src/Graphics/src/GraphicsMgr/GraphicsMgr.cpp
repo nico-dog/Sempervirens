@@ -3,70 +3,53 @@
 #include <GraphicsMgr/IGraphicsRenderer.hpp>
 #include <Logging/Logger.hpp>
 
-#if defined(__unix__)
-#include <dlfcn.h>
-#endif
-
 namespace dog::graphics::mgr {
 
   GraphicsMgr::~GraphicsMgr() {
 
-    release();
+    if (_graphicsLib) dog::app::dlibs::release(_graphicsLib);
   }
 
-  void GraphicsMgr::load() {
+  bool GraphicsMgr::load(std::string libname) {
 
-#if defined(__unix__)
-    _graphicsLib = dlopen("/home/nico/DawnOfGiants/Sempervirens/build/Graphics/libgraphicslib.so", RTLD_LAZY);         
+    _graphicsLib = dog::app::dlibs::load(std::move(libname));
     if (!_graphicsLib) {
 
-      DOG_LOGERR("Could not load graphics library, " << dlerror());
+      DOG_LOGERR("graphics mgr could not load graphics library");
+      return false;
     }
-#endif
+    return true;
   }
 
-  void GraphicsMgr::createRenderer() {
+  std::shared_ptr<IGraphicsRenderer> GraphicsMgr::createRenderer() {
 
-    f_createRenderer createRenderer;
+    auto fPtr = dog::app::dlibs::getSymbol(_graphicsLib, "createRenderer");
+    if (!fPtr) {
 
-#if defined(__unix__)
-    void* fPtr = dlsym(_graphicsLib, "createRenderer");
-#endif
-
-    if (char* error = dlerror(); error != nullptr)
-    {
-      DOG_LOGERR("Could not load get fct ptr, " << error);
-      return;
+      DOG_LOGERR("graphics mgr could not load symbol from graphics library");
+      return nullptr;
     }
+    using createRenderer_t = std::shared_ptr<IGraphicsRenderer> (*)();
+    createRenderer_t createRenderer = reinterpret_cast<createRenderer_t>(fPtr);
 
-    createRenderer = reinterpret_cast<f_createRenderer>(fPtr);
-    _renderer = createRenderer();
-    
+    return createRenderer();
   }
   
   void GraphicsMgr::release() {
 
-    f_destroyRenderer destroyRenderer;
+    /*
+    auto fPtr = dog::app::dlibs::getSymbol(_graphicsLib, "destroyRenderer");
+    if (!fPtr) {
 
-#if defined(__unix__)    
-    void* fPtr = dlsym(_graphicsLib, "destroyRenderer");
-    if (char* error = dlerror(); error != nullptr)
-    {
-      DOG_LOGERR("Could not load get fct ptr, " << error);
-      return;
+      DOG_LOGERR("graphics mgr could not load symbol from graphics library");
+      return nullptr;
     }
-#endif
-    
-    destroyRenderer = reinterpret_cast<f_destroyRenderer>(fPtr);
-    destroyRenderer(_renderer);
+    using destroyRenderer_t = std::shared_ptr<IGraphicsRenderer> (*)();
+    destroyRenderer_t destroyRenderer = reinterpret_cast<destroyRenderer_t>(fPtr);
+    destroyRenderer(_pRenderer);
+    */
 
-#if defined(__unix__)
-    dlclose(_graphicsLib);
-#endif
+    dog::app::dlibs::release(_graphicsLib);
   }
-
-  IGraphicsRenderer* GraphicsMgr::renderer() { return _renderer; }
-
-  
 
 }

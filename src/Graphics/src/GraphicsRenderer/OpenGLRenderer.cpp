@@ -8,4 +8,7 @@ namespace dog::graphics::renderer {
 
     DOG_LOGMSG("rendering...");
   }
+
+  OpenGLRenderer::OpenGLRenderer() { DOG_LOGMSG("OpenGLRenderer ctor"); }
+  OpenGLRenderer::~OpenGLRenderer() { DOG_LOGMSG("OpenGLRenderer dtor"); }
 }
