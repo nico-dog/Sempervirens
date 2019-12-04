@@ -5,6 +5,7 @@ project(utilities VERSION 1.0 LANGUAGES CXX)
 # Define target
 #
 #***************************************
+if(UNIX)
 add_library(utilities STATIC
   src/Logging/Active.cpp
   src/Logging/Logger.cpp
@@ -12,7 +13,11 @@ add_library(utilities STATIC
   src/Logging/LogLevel.cpp
   src/Logging/LogSink.cpp
   src/UnitTesting/UnitTest.cpp
-  src/UnitTesting/UnitTestRegister.cpp)
+  src/UnitTesting/UnitTestRegister.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../App/src/MemoryAlloc/MemoryAlloc_unix.cpp
+  src/MemoryAlloc/MemoryArea.cpp
+  src/MemoryAlloc/LinearAllocator.cpp)
+endif()
 
 target_include_directories(utilities
   PUBLIC
@@ -113,4 +118,10 @@ add_executable(register
 target_link_libraries(register
   utilities)
 add_test(NAME register-test COMMAND register)
+
+add_executable(arena
+  test/MemoryArenaTest.cpp)
+target_link_libraries(arena
+  utilities)
+add_test(NAME arena-test COMMAND arena)
 endif()

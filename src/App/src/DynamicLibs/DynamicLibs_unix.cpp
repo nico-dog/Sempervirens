@@ -5,12 +5,13 @@
 
 namespace dog::app::dlibs {
 
-  dlib_t load(std::string libname) {
+  std::optional<dlib_t> load(std::string libname) {
 
     auto lib = dlopen(std::move(libname).c_str(), RTLD_LAZY);         
     if (!lib) {
 
       DOG_LOGERR(dlerror());
+      return std::nullopt;
     }
     return lib;
   }
@@ -20,12 +21,13 @@ namespace dog::app::dlibs {
     dlclose(lib);
   }
   
-  symb_t getSymbol(dlib_t lib, std::string symbol) {
+  std::optional<symb_t> getSymbol(dlib_t lib, std::string symbol) {
 
     auto symb = dlsym(lib, std::move(symbol).c_str());
     if (!symb) {
 
       DOG_LOGERR(dlerror());
+      return std::nullopt;
     }
     return symb;
   }

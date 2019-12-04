@@ -19,8 +19,5 @@ namespace dog::graphics::renderer {
       DOG_LOGMSG("create OpenGLRenderer");
       return std::shared_ptr<IGraphicsRenderer>{new OpenGLRenderer{}, destroyRenderer};
     }
-    
-
   }
-
 }

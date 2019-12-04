@@ -1,3 +1,9 @@
+//***************************************************
+//
+// Definition of UnitTestRegister object
+// The UnitTestRegister holds a container of UnitTest objects.
+//
+//***************************************************
 #ifndef UNITTESTREGISTER_HPP
 #define UNITTESTREGISTER_HPP
 #include <UnitTesting/UnitTest.hpp>

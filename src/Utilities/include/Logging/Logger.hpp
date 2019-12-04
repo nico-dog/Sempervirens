@@ -11,16 +11,14 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 #include <Build/Build.hpp>
+#include <Misc/Misc.hpp>
 #include <Logging/Singleton.hpp>
 #include <Logging/LogMsg.hpp> 
-#include <Logging/LogLevel.hpp> 
 #include <memory>
 #include <cstring>
 
 namespace dog::utilities::logging {
 
-  class LogSink;
-  
   class Logger : public Singleton<Logger> {
 
     friend class Singleton<Logger>;
@@ -44,7 +42,6 @@ namespace dog::utilities::logging {
     void static test();
 #endif
   };
-}
 
 // Macros to create empty-buffer messages with proper log levels
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
@@ -71,5 +68,5 @@ namespace dog::utilities::logging {
 #define DOG_LOGWRN(msg) DOG_LOG(WRN, msg)
 #define DOG_LOGERR(msg) DOG_LOG(ERR, msg)
 #define DOG_LOGFAT(msg) DOG_LOG(FAT, msg)
-
+}
 #endif

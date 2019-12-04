@@ -1,3 +1,10 @@
+//***************************************************
+//
+// Definition of UnitTest object
+// UnitTest is a polymorphics wrapper for the concept of being testable.
+// A type is testable of it provides a free test() function and a call operator.
+//
+//***************************************************
 #ifndef UNITTEST_HPP
 #define UNITTEST_HPP
 #include <memory>

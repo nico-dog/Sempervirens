@@ -10,7 +10,7 @@ namespace dog::utilities::logging {
   public:
     ActiveImpl() {
 
-      _thd = std::unique_ptr<std::thread>(new std::thread([=]{ this->run(); }));
+      _thd = std::unique_ptr<std::thread>(new std::thread([=](){ this->run(); }));
     }
     
     ~ActiveImpl() {

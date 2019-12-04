@@ -7,7 +7,7 @@ namespace dog::utilities::unittesting {
   class UnitTestRegister::UnitTestRegisterImpl {
 
   public:
-    UnitTestRegisterImpl() {};
+    UnitTestRegisterImpl() = default;
 
     std::vector<UnitTest> _unitTests;
   };

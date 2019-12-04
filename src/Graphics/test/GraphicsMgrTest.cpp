@@ -7,10 +7,7 @@ int main() {
 
   if (!mgr.load("/home/nico/DawnOfGiants/Sempervirens/build/Graphics/libgraphicsogl.so")) return 1;
 
-  auto renderer = mgr.createRenderer();
-  if (!renderer) return 1;
-
-  renderer->render();
+  mgr.render();
   
   return 0;
 }

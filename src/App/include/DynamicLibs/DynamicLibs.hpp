@@ -1,6 +1,15 @@
+//***************************************************
+//
+// Definition of dlibs namespace:
+// The namespace provides a platform-indepedent interface for loading dynamic libraries
+// (i.e., HAL, "Hardware Abstraction Layer")
+// Different implementations are provided for different platforms.
+//
+//***************************************************
 #ifndef DYNAMICLIBS_HPP
 #define DYNAMICLIBS_HPP
 #include <Platform/Platform.hpp>
+#include <optional>
 #include <string>
 
 namespace dog::app::dlibs {
@@ -14,8 +23,8 @@ namespace dog::app::dlibs {
   using dlib_t = void*;
 #endif
 
-  dlib_t load(std::string libname);
+  std::optional<dlib_t> load(std::string libname);
   void release(dlib_t lib);
-  symb_t getSymbol(dlib_t lib, std::string symbol);
+  std::optional<symb_t> getSymbol(dlib_t lib, std::string symbol);
 }
 #endif
