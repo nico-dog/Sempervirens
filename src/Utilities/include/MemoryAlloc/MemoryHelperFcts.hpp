@@ -15,26 +15,55 @@
 #define MEMORYHELPERFCTS_HPP
 #include <Misc/Misc.hpp>
 #include <type_traits>
-
+#include <cstdint>
 
 namespace dog::utilities::memoryalloc {
-  
+
+  // Align pointer up to next multiple of alignment
+  inline void* alignUp(void* ptr, std::size_t alignment) {
+
+    // Need to cast to perform pointer bitwise op.
+    // uintptr_t is an integer type guaranteed to be large enough to store a ptr
+    return ptr = reinterpret_cast<void*>((reinterpret_cast<std::uintptr_t>(ptr) + alignment - 1) & ~(alignment - 1));
+  }
+
+  // Allocation block: ptr + allocated size
+  template<typename T>
+  struct Block {
+
+    T* _ptr;
+    std::size_t _size;
+  };
+
+  template<typename T, typename... Args>
+  Block<T> New(void* ptr, Args&&... args);
+
+  //template<typename T, class Arena>
+  //void Delete(T* type, Arena& arena);
   template<typename T, class Arena>
-  void Delete(T* type, Arena& arena);
+  void Delete(Block<T> block, Arena& arena);
 
-  template <typename T, class Arena>
-  T* NewArray(Arena& arena, std::size_t N, const char* file, int line);
+  //template<typename T, class Arena>
+  //T* NewArray(Arena& arena, std::size_t N, const char* file, int line);
+  template<typename T, class Arena>
+  Block<T> NewArray(Arena& arena, std::size_t N, const char* file, int line);
 
-  template <typename T, class Arena>
-  void DeleteArray(T* ptr, Arena& arena);
-  
-#define DOG_NEW(type, arena) new (arena.allocate(std::sizeof(type), std::alignment_of_v<type>, __FILENAME__, __LINE__)) type
-#define DOG_DELETE(object, arena) Delete(object, arena)
+  //template<typename T, class Arena>
+  //void DeleteArray(T* ptr, Arena& arena);
+  template<typename T, class Arena>
+  void DeleteArray(Block<T>, Arena& arena);
+
+//#define DOG_NEW(type, arena) new (arena.allocate(sizeof(type), std::alignment_of_v<type>, __FILENAME__, __LINE__)) type
+//#define DOG_DELETE(object, arena) Delete(object, arena)
+
+#define DOG_NEW(type, arena, ...) New<type>(arena.allocate(sizeof(type), std::alignment_of_v<type>, __FILENAME__, __LINE__), ##__VA_ARGS__)
+#define DOG_DELETE(block, arena) Delete(block, arena)
 
 #define DOG_NEW_ARRAY(type, N, arena) NewArray<type>(arena, N, __FILENAME__, __LINE__)
-#define DOG_DELETE_ARRAY(object, arena) DeleteArray(object, arena)
+#define DOG_DELETE_ARRAY(block, arena) DeleteArray(block, arena)
 
-#define DOG_kB(value) value * 1024
+#define DOG_B(value)  value
+#define DOG_kB(value) DOG_B(value)  * 1024
 #define DOG_MB(value) DOG_kB(value) * 1024
 #define DOG_GB(value) DOG_MB(value) * 1024
 

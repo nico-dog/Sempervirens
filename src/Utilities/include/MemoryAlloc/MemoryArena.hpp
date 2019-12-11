@@ -14,12 +14,12 @@
 namespace dog::utilities::memoryalloc {
 
   //template <class AllocationPolicy, class ThreadPolicy, class BoundsCheckingPolicy, class MemoryTrackingPolicy, class MemoryTaggingPolicy>
-  template <class AllocationPolicy>
+  template <class AllocationPolicy, class BoundsCheckingPolicy>
   class MemoryArena
   {
     AllocationPolicy* _allocator;
     //ThreadPolicy _threadGuard;
-    //BoundsCheckingPolicy _boundsChecker;
+    BoundsCheckingPolicy _boundsChecker;
     //MemoryTrackingPolicy _memoryTracker;
     //MemoryTaggingPolicy _memoryTagger;
     
