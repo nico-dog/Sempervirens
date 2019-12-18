@@ -16,9 +16,35 @@
 #include <Misc/Misc.hpp>
 #include <type_traits>
 #include <cstdint>
+#include <cassert>
+
+#include <iostream>
+#include <iomanip>
 
 namespace dog::utilities::memoryalloc {
 
+  // Set n bytes to value, used by bounds checker at allocation
+  inline void Memset(void* const ptr, std::uint8_t value, std::size_t n) {
+
+    auto ptr_c = static_cast<char*>(ptr);
+    while (n > 0)
+    {
+      *ptr_c++ = value;
+      --n;
+    }
+  }
+
+  // Check that n bytes have given value, used by bounds checker at deallocation
+  inline void Memcheck(void* const ptr, std::uint8_t value, std::size_t n) {
+
+    auto ptr_c = static_cast<char*>(ptr);
+    while (n > 0)
+    {
+      assert(static_cast<std::uint8_t>(*ptr_c++) == value);
+      --n;
+    }    
+  }
+  
   // Align pointer up to next multiple of alignment
   inline void* alignUp(void* ptr, std::size_t alignment) {
 
@@ -38,28 +64,19 @@ namespace dog::utilities::memoryalloc {
   template<typename T, typename... Args>
   Block<T> New(void* ptr, Args&&... args);
 
-  //template<typename T, class Arena>
-  //void Delete(T* type, Arena& arena);
   template<typename T, class Arena>
   void Delete(Block<T> block, Arena& arena);
 
-  //template<typename T, class Arena>
-  //T* NewArray(Arena& arena, std::size_t N, const char* file, int line);
   template<typename T, class Arena>
   Block<T> NewArray(Arena& arena, std::size_t N, const char* file, int line);
 
-  //template<typename T, class Arena>
-  //void DeleteArray(T* ptr, Arena& arena);
   template<typename T, class Arena>
   void DeleteArray(Block<T>, Arena& arena);
-
-//#define DOG_NEW(type, arena) new (arena.allocate(sizeof(type), std::alignment_of_v<type>, __FILENAME__, __LINE__)) type
-//#define DOG_DELETE(object, arena) Delete(object, arena)
 
 #define DOG_NEW(type, arena, ...) New<type>(arena.allocate(sizeof(type), std::alignment_of_v<type>, __FILENAME__, __LINE__), ##__VA_ARGS__)
 #define DOG_DELETE(block, arena) Delete(block, arena)
 
-#define DOG_NEW_ARRAY(type, N, arena) NewArray<type>(arena, N, __FILENAME__, __LINE__)
+#define DOG_NEW_ARRAY(type, arena, N) NewArray<type>(arena, N, __FILENAME__, __LINE__)
 #define DOG_DELETE_ARRAY(block, arena) DeleteArray(block, arena)
 
 #define DOG_B(value)  value

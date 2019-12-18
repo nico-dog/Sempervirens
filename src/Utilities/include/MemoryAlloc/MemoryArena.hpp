@@ -2,8 +2,12 @@
 //
 // Definition of memory arena
 // Following implementation from Molecular Matters (https://blog.molecular-matters.com/2011/07/07/memory-system-part-5/)
-//
-// 
+// The arena forwards allocation calls to the allocator it points to, while taking care of:
+// - bounds checking
+// - memory tracking
+// - memory tagging
+// - concurrent access to allocator
+// The allocator is initialized beforehand for a given memory area (stack or heap).
 //
 //***************************************************
 #ifndef MEMORYARENA_HPP
@@ -14,9 +18,9 @@
 namespace dog::utilities::memoryalloc {
 
   //template <class AllocationPolicy, class ThreadPolicy, class BoundsCheckingPolicy, class MemoryTrackingPolicy, class MemoryTaggingPolicy>
-  template <class AllocationPolicy, class BoundsCheckingPolicy>
-  class MemoryArena
-  {
+  template<class AllocationPolicy, class BoundsCheckingPolicy>
+  class MemoryArena {
+
     AllocationPolicy* _allocator;
     //ThreadPolicy _threadGuard;
     BoundsCheckingPolicy _boundsChecker;
@@ -26,10 +30,14 @@ namespace dog::utilities::memoryalloc {
   public:
     MemoryArena(AllocationPolicy* allocator, std::string description);
     ~MemoryArena() = default;
+
+    MemoryArena(MemoryArena const&) = delete;
+    MemoryArena& operator=(MemoryArena const&) = delete;
+    MemoryArena(MemoryArena&&) = delete;
+    MemoryArena& operator=(MemoryArena&&) = delete;
     
-    //void* allocate(size_t size, size_t alignment, const SourceInfo& sourceInfo);
     void* allocate(std::size_t size, std::size_t alignment, const char* file, int line);
-    void deallocate(void* ptr);
+    void deallocate(void* ptr, std::size_t size);
 
 #if DOG_BUILD(UNITTESTS)
     void static test();

@@ -1,16 +1,18 @@
 #define MEMORYALLOC_CPP
 #include <MemoryAlloc/MemoryAlloc.hpp>
 #include <stdlib.h>
+#include <alloca.h>
 
 namespace dog::app::memoryalloc {
 
-  void* allocate(std::size_t size) {
+  void* allocateHeap(std::size_t size) {
 
     return malloc(size);
   }
 
-  void deallocate(void* ptr) {
+  void deallocateHeap(void* ptr) {
 
     free(ptr);
   }
+
 }

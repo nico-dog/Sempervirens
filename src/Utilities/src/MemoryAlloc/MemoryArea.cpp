@@ -5,25 +5,20 @@
 
 namespace dog::utilities::memoryalloc {
 
-  HeapArea::HeapArea(std::size_t size) {
+  HeapArea::HeapArea(std::size_t size) : _begin{static_cast<char*>(dog::app::memoryalloc::allocateHeap(size))}, _size{size} {
 
-    _begin = static_cast<char*>(dog::app::memoryalloc::allocate(size));
-    _end = _begin + size;
-    _size = size;
-
-    DOG_LOGMSG("HeapArea ctor: size = " << _size
-	       << ", start = " << static_cast<void*>(_begin)
-	       << ", end = " << static_cast<void*>(_end));
+    DOG_LOGMSG("Memory area ctor: size = " << _size
+	       << ", begin = " << static_cast<void*>(_begin) << ", end = " << static_cast<void*>(_begin + _size));
   }
 
   HeapArea::~HeapArea() {
 
-    dog::app::memoryalloc::deallocate(_begin);
+    //dog::app::memoryalloc::deallocateHeap(static_cast<void*>(_begin));
   }
 
-  StackArea::StackArea(void* begin, std::size_t size) : _begin{static_cast<char*>(begin)}, _size{size} {
+  StackArea::StackArea(void* ptr, std::size_t size) : _begin{static_cast<char*>(ptr)}, _size{size} {
 
-    DOG_LOGMSG("StaticArea ctor: size = " << _size
+    DOG_LOGMSG("Memory area ctor: size = " << _size
 	       << ", begin = " << static_cast<void*>(_begin) << ", end = " << static_cast<void*>(_begin + _size));
   }
 }

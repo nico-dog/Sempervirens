@@ -11,7 +11,8 @@
 
 namespace dog::app::memoryalloc {
 
-  void* allocate(std::size_t size);
-  void deallocate(void* ptr);
+  void* allocateHeap(std::size_t size);
+  void deallocateHeap(void* ptr);
+
 }
 #endif

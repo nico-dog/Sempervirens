@@ -10,43 +10,42 @@
 #include <cstdint>
 
 namespace dog::utilities::memoryalloc {
-  
+      
   class HeapArea {
 
     char* _begin;
-    char* _end;
     std::size_t _size;
-
+    
   public:
     explicit HeapArea(std::size_t size);
     ~HeapArea();
-
-    HeapArea(HeapArea const&) = default;
-    HeapArea& operator=(HeapArea const&) = default;
+    
+    HeapArea(HeapArea const&) = delete;
+    HeapArea& operator=(HeapArea const&) = delete;
     HeapArea(HeapArea&&) = delete;
     HeapArea& operator=(HeapArea&&) = delete;
- 
-    void* begin() const { return _begin; }
-    void* end() const { return _end; }
-    std::size_t size() const { return _size; }
+
+    void* begin() { return static_cast<void*>(_begin); }
+    std::size_t size() { return _size; }
   };
-    
+
   class StackArea {
 
     char* _begin;
     std::size_t _size;
     
   public:
-    StackArea(void* begin, std::size_t size);
+    StackArea(void* ptr, std::size_t size);
+    ~StackArea() = default;
     
-    StackArea(StackArea const&) = default;
-    StackArea& operator=(StackArea const&) = default;
-    StackArea(StackArea&&) noexcept = default;
-    StackArea& operator=(StackArea&&) noexcept = default;
+    StackArea(StackArea const&) = delete;
+    StackArea& operator=(StackArea const&) = delete;
+    StackArea(StackArea&&) = delete;
+    StackArea& operator=(StackArea&&) = delete;
 
-    void* begin() { return _begin; }
-    void* end() { return _begin + _size; }
+    void* begin() { return static_cast<void*>(_begin); }
     std::size_t size() { return _size; }
   };
+  
 }
 #endif

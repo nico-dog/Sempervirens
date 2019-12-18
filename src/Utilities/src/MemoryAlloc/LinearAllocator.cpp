@@ -7,6 +7,10 @@
 
 namespace dog::utilities::memoryalloc {
 
+  LinearAllocator::LinearAllocator(void* ptr, std::size_t size) :
+    _begin{static_cast<char*>(ptr)}, _current{_begin}, _end{_begin + size} {}  
+
+
   void* LinearAllocator::allocate(std::size_t size, std::size_t alignment, std::size_t offset) {
 
     DOG_LOGMSG("current ptr = " << static_cast<void*>(_current));
@@ -28,9 +32,10 @@ namespace dog::utilities::memoryalloc {
     
     void* usrPtr = _current;
 
-    for (auto i = std::size_t{0}; i < offset; ++i) *prev++ = 0xef;
+    //for (auto i = std::size_t{0}; i < offset; ++i) *prev++ = 0xef;
+    prev += offset;
     for (auto i = std::size_t{0}; i < size - 2 * offset; ++i) *prev++ = 0xab;
-    for (auto i = std::size_t{0}; i < offset; ++i) *prev++ = 0xef;
+    //for (auto i = std::size_t{0}; i < offset; ++i) *prev++ = 0xef;
 
 
     
@@ -52,6 +57,7 @@ namespace dog::utilities::memoryalloc {
     std::stringstream s{};
     auto ptr = _begin;
     auto nBytes = _end - _begin;
+
     auto delimiters = std::array<char, 2>{' ', ':'};
     for (auto i = 1; i < nBytes + 1; ++i)
     {
