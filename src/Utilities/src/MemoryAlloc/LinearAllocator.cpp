@@ -13,41 +13,40 @@ namespace dog::utilities::memoryalloc {
 
   void* LinearAllocator::allocate(std::size_t size, std::size_t alignment, std::size_t offset) {
 
-    DOG_LOGMSG("current ptr = " << static_cast<void*>(_current));
-    auto prev = _current;
-    
-    auto alignedPtr = alignUp(_current + offset, alignment);
+    union
+    {
+      void* as_void;
+      char* as_char;
+    };
 
-    DOG_LOGMSG("aligned ptr = " << static_cast<void*>(alignedPtr));
+    as_char = _current;
     
+    DOG_LOGMSG("current ptr = " << as_void);
+
     // Offset pointer first, align it, and offset it back
-    _current = static_cast<char*>(alignedPtr) - offset;
+    as_char += offset;    
+    as_void = alignUp(as_void, alignment);
+    DOG_LOGMSG("aligned ptr = " << as_void);
+    as_char -= offset;
 
-    DOG_LOGMSG("current ptr after alignment + offset = " << static_cast<void*>(_current));
+    DOG_LOGMSG("current ptr after alignment + offset = " << as_void);
 
-    auto nLostBytes = _current - prev;
-    DOG_LOGMSG("number of bytes lost: " <<nLostBytes);
-    for (auto i = 0; i < nLostBytes; ++i) *prev++ = 0xcd;
-
-    
-    void* usrPtr = _current;
-
-    //for (auto i = std::size_t{0}; i < offset; ++i) *prev++ = 0xef;
-    prev += offset;
-    for (auto i = std::size_t{0}; i < size - 2 * offset; ++i) *prev++ = 0xab;
-    //for (auto i = std::size_t{0}; i < offset; ++i) *prev++ = 0xef;
+    auto nLostBytes = as_char - _current;
+    DOG_LOGMSG("number of bytes lost: " << nLostBytes);
+    for (auto i = 0; i < nLostBytes; ++i) *_current++ = 0xcd;
 
 
-    
-    _current += size;
+    _current += offset;
+    for (auto i = std::size_t{0}; i < size - 2 * offset; ++i) *_current++ = 0xab;
+    _current += offset;
 
     DOG_LOGMSG("current ptr after allocation = " << static_cast<void*>(_current));
     
-    if (_current >= _end) return nullptr;
+    assert(!(_current >= _end));
 
     *_current = 0xcc;
  
-    return usrPtr;
+    return as_void;
   }
 
   void LinearAllocator::dumpMemory() {

@@ -25,8 +25,8 @@ namespace dog::utilities::memoryalloc {
     HeapArea(HeapArea&&) = delete;
     HeapArea& operator=(HeapArea&&) = delete;
 
-    void* begin() { return static_cast<void*>(_begin); }
-    std::size_t size() { return _size; }
+    void* const begin() const { return static_cast<void*>(_begin); }
+    std::size_t size() const { return _size; }
   };
 
   class StackArea {
@@ -43,8 +43,8 @@ namespace dog::utilities::memoryalloc {
     StackArea(StackArea&&) = delete;
     StackArea& operator=(StackArea&&) = delete;
 
-    void* begin() { return static_cast<void*>(_begin); }
-    std::size_t size() { return _size; }
+    void* const begin() const { return static_cast<void*>(_begin); }
+    std::size_t size() const { return _size; }
   };
   
 }

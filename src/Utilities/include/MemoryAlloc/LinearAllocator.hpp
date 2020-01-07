@@ -26,7 +26,8 @@ namespace dog::utilities::memoryalloc {
     ~LinearAllocator() = default;
 
     void* allocate(std::size_t size, std::size_t alignment, std::size_t offset);
-    inline void deallocate(void* ptr, std::size_t size) const {}
+    inline void deallocate(void* ptr, std::size_t size) {};
+    //inline void reset() { _current = _begin; }
     inline void reset() { *_current = 0; _current = _begin; *_current = 0xcc; }
     
     inline void* begin() const { return static_cast<void*>(_begin); }

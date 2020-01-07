@@ -13,7 +13,7 @@ namespace dog::utilities::memoryalloc {
 
   HeapArea::~HeapArea() {
 
-    //dog::app::memoryalloc::deallocateHeap(static_cast<void*>(_begin));
+    dog::app::memoryalloc::deallocateHeap(static_cast<void*>(_begin));
   }
 
   StackArea::StackArea(void* ptr, std::size_t size) : _begin{static_cast<char*>(ptr)}, _size{size} {

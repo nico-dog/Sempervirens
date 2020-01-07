@@ -26,10 +26,10 @@ namespace dog::utilities::memoryalloc {
   // Set n bytes to value, used by bounds checker at allocation
   inline void Memset(void* const ptr, std::uint8_t value, std::size_t n) {
 
-    auto ptr_c = static_cast<char*>(ptr);
+    auto as_char = static_cast<char*>(ptr);
     while (n > 0)
     {
-      *ptr_c++ = value;
+      *as_char++ = value;
       --n;
     }
   }
@@ -37,10 +37,10 @@ namespace dog::utilities::memoryalloc {
   // Check that n bytes have given value, used by bounds checker at deallocation
   inline void Memcheck(void* const ptr, std::uint8_t value, std::size_t n) {
 
-    auto ptr_c = static_cast<char*>(ptr);
+    auto as_char = static_cast<char*>(ptr);
     while (n > 0)
     {
-      assert(static_cast<std::uint8_t>(*ptr_c++) == value);
+      assert(static_cast<std::uint8_t>(*as_char++) == value);
       --n;
     }    
   }
@@ -48,9 +48,9 @@ namespace dog::utilities::memoryalloc {
   // Align pointer up to next multiple of alignment
   inline void* alignUp(void* ptr, std::size_t alignment) {
 
-    // Need to cast to perform pointer bitwise op.
+    // Need to cast to integral type to perform pointer bitwise op.
     // uintptr_t is an integer type guaranteed to be large enough to store a ptr
-    return ptr = reinterpret_cast<void*>((reinterpret_cast<std::uintptr_t>(ptr) + alignment - 1) & ~(alignment - 1));
+    return reinterpret_cast<void*>((reinterpret_cast<std::uintptr_t>(ptr) + alignment - 1) & ~(alignment - 1));
   }
 
   // Allocation block: ptr + allocated size

@@ -30,23 +30,39 @@ namespace dog::utilities::memoryalloc {
 
 
     DOG_LOGMSG("new size = " << newSize << " bytes with alignment " << alignment << ", offset = " << offset);
-    
-    auto ptr = static_cast<char*>(_allocator->allocate(newSize, alignment, offset));
 
-    _boundsChecker.guardFront(ptr);
-    _boundsChecker.guardBack(ptr + offset + size);
+    union
+    {
+      void* as_void;
+      char* as_char;
+    };
+    
+    as_void = _allocator->allocate(newSize, alignment, offset);
 
-    DOG_LOGMSG("arena returns " << static_cast<void*>(ptr + offset));
+    _boundsChecker.guardFront(as_void);
+    as_char += (offset + size);
+    _boundsChecker.guardBack(as_void);
+
+    as_char -= size;
+    DOG_LOGMSG("arena returns " << as_void);
     
-    
-    return ptr + offset;
+    return as_void;
   }
 
   template<class AllocationPolicy, class BoundsCheckingPolicy>
   void MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::deallocate(void* ptr, std::size_t size) {
 
-    _boundsChecker.checkFront(static_cast<char*>(ptr) - BoundsCheckingPolicy::GUARD_SIZE);
-    _boundsChecker.checkBack(static_cast<char*>(ptr) + size);
+    union
+    {
+      void* as_void;
+      char* as_char;
+    };
+
+    as_void = ptr;
+    as_char -= BoundsCheckingPolicy::GUARD_SIZE;
+    _boundsChecker.checkFront(as_void);
+    as_char += (BoundsCheckingPolicy::GUARD_SIZE + size);
+    _boundsChecker.checkBack(as_void);
     
     _allocator->deallocate(ptr, size);
   }
@@ -94,9 +110,9 @@ namespace dog::utilities::memoryalloc {
 
     allocator.dumpMemory();
     
-
-    DOG_DELETE_ARRAY(myBlock, arena);
     DOG_DELETE(myBlock2, arena);
+    DOG_DELETE_ARRAY(myBlock, arena);
+
 
     allocator.reset();
     allocator.dumpMemory();

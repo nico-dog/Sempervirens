@@ -2,7 +2,6 @@
 #define BOUNDSCHECKINGPOLICY_HPP
 #include <MemoryAlloc/MemoryHelperFcts.hpp>
 #include <cstdint>
-#include <cstring>
 
 namespace dog::utilities::memoryalloc {
 
@@ -20,16 +19,16 @@ namespace dog::utilities::memoryalloc {
     inline void checkBack(void* const ptr) const { Memcheck(ptr, _val, GUARD_SIZE); }
   };
   
-  class VoidBoundsChecker
+  class NoBoundsChecker
   {
   public:
-    static const size_t SIZE_GUARD = 0;
+    static const size_t GUARD_SIZE = 0;
  
-    inline void guardFront(void*) const {}
-    inline void guardBack(void*) const {}
+    inline void guardFront(void* const ptr) const {}
+    inline void guardBack(void* const ptr) const {}
  
-    inline void checkFront(const void*) const {}
-    inline void checkBack(const void*) const {}
+    inline void checkFront(void* const ptr) const {}
+    inline void checkBack(void* const ptr) const {}
   };
 }
 #endif
