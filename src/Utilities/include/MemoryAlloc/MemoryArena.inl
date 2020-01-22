@@ -23,55 +23,85 @@ namespace dog::utilities::memoryalloc {
   template<class AllocationPolicy, class BoundsCheckingPolicy>
   void* MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::allocate(std::size_t size, std::size_t alignment, const char* file, int line) {
 
-    DOG_LOGMSG("original size = " << size << " bytes, with alignment = " << alignment);
-
-    auto newSize = size + 2 * BoundsCheckingPolicy::GUARD_SIZE; 
-    auto offset = BoundsCheckingPolicy::GUARD_SIZE; 
-
-
-    DOG_LOGMSG("new size = " << newSize << " bytes with alignment " << alignment << ", offset = " << offset);
-
-    union
+    // We return the address from the allocator directly if no bounds checking is required. In this case no offset is introduced.
+    if constexpr (std::is_same_v<BoundsCheckingPolicy, VoidBoundsChecker>)
     {
-      void* as_void;
-      char* as_char;
-    };
-    
-    as_void = _allocator->allocate(newSize, alignment, offset);
+      return _allocator->allocate(size, alignment, 0);
+    }
+    else
+    // If bounds checking is required, we compute the total size of the allocation to accound for the guards and the offset.
+    {     
+      auto totalSize = size + BoundsCheckingPolicy::FRONT_GUARD_SIZE + BoundsCheckingPolicy::BACK_GUARD_SIZE;
+      auto offset = BoundsCheckingPolicy::FRONT_GUARD_SIZE;
 
-    _boundsChecker.guardFront(as_void);
-    as_char += (offset + size);
-    _boundsChecker.guardBack(as_void);
+      // Simple bounds checking adds guards at front and back of allocation.
+      if constexpr (std::is_same_v<BoundsCheckingPolicy, BoundsChecker>)
+      {
+	APtr<char> p{_allocator->allocate(totalSize, alignment, offset)};
+	_boundsChecker.guardFront(p.asVoid());
+	p += (offset + size);
+	_boundsChecker.guardBack(p.asVoid());
+	p -= size;
+	return p.asVoid();
+      }
+      else
+      // Extended bounds checking adds guards at front and back of allocation and checks guards of all allocations.
+      // To do so, the bounds checker includes the size of the allocation in its back guard and the number of bytes
+      // possibly lost between the previous and current allocation in its front guard.
+      {
+	auto ptrPrevAlloc = static_cast<char*>(_allocator->current());
+	
+	APtr<char> p{_allocator->allocate(totalSize, alignment, offset)};
+	auto nLostBytes = static_cast<std::uint8_t>(p.asType() - ptrPrevAlloc);
 
-    as_char -= size;
-    DOG_LOGMSG("arena returns " << as_void);
-    
-    return as_void;
+	_boundsChecker.guardFront(p.asVoid(), nLostBytes);
+	p += (offset + size);
+	_boundsChecker.guardBack(p.asVoid(), static_cast<std::uint32_t>(size));
+	_boundsChecker.checkAllGuards(_allocator->current(), _allocator->begin());
+
+	p-= size;
+	return p.asVoid();
+      }
+    }
   }
 
   template<class AllocationPolicy, class BoundsCheckingPolicy>
   void MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::deallocate(void* ptr, std::size_t size) {
 
-    union
+    // Simply deallocate memory if no bounds checking is required.
+    if constexpr (std::is_same_v<BoundsCheckingPolicy, VoidBoundsChecker>)
     {
-      void* as_void;
-      char* as_char;
-    };
-
-    as_void = ptr;
-    as_char -= BoundsCheckingPolicy::GUARD_SIZE;
-    _boundsChecker.checkFront(as_void);
-    as_char += (BoundsCheckingPolicy::GUARD_SIZE + size);
-    _boundsChecker.checkBack(as_void);
-    
-    _allocator->deallocate(ptr, size);
+      _allocator->deallocate(ptr, size);
+    }
+    else
+    // The simple bounds checker checks the front and back guards of the current allocation before
+    // releasing the memory. The extending bounds checker checks the guards of all allocations before
+    // releasing the memory.
+    {
+      APtr<char> p{ptr};
+      
+      if constexpr (std::is_same_v<BoundsCheckingPolicy, BoundsChecker>)
+      {
+	p -= BoundsCheckingPolicy::FRONT_GUARD_SIZE;
+	_boundsChecker.checkFront(p.asVoid());
+	p += (BoundsCheckingPolicy::FRONT_GUARD_SIZE + size);
+	_boundsChecker.checkBack(p.asVoid());
+      }
+      else
+      {
+	auto ptrPastAlloc = p + size + BoundsCheckingPolicy::BACK_GUARD_SIZE;
+	_boundsChecker.checkAllGuards(static_cast<void*>(ptrPastAlloc), _allocator->begin());
+      }
+      
+      _allocator->deallocate(p.asVoid(), size);
+    }
   }
 
   
 #if DOG_BUILD(UNITTESTS)
   template<class AllocationPolicy, class BoundsCheckingPolicy>
   void MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::test() {
-
+    
     auto areaSize = std::size_t{DOG_B(64)};
     
     char* stackArea[areaSize] = {0};
@@ -79,8 +109,9 @@ namespace dog::utilities::memoryalloc {
     //auto area = HeapArea{areaSize};
     auto allocator = LinearAllocator{area.begin(), area.size()};
 
-    
-    auto arena = MemoryArena<LinearAllocator, BoundsChecker>{&allocator, "Linear arena on stack"};
+    //auto arena = MemoryArena<LinearAllocator, VoidBoundsChecker>{&allocator, "Linear arena on stack"};
+    //auto arena = MemoryArena<LinearAllocator, BoundsChecker>{&allocator, "Linear arena on stack"};
+    auto arena = MemoryArena<LinearAllocator, ExtendedBoundsChecker>{&allocator, "Linear arena on stack"};
 
     struct MyObject {
       int _value;
@@ -97,14 +128,14 @@ namespace dog::utilities::memoryalloc {
     Block<MyObject> myBlock = DOG_NEW_ARRAY(MyObject, arena, 2);
 
     DOG_LOGMSG("First object allocated at " << static_cast<void*>(myBlock._ptr));
-    
     allocator.dumpMemory();
 
-
-    
     MyObject* objects = myBlock._ptr;
     objects[0]._value = 1;
     objects[1]._value = 2;
+
+    allocator.dumpMemory();
+    
 
     Block<MyPOD> myBlock2 = DOG_NEW(MyPOD, arena, 3);
 
@@ -113,12 +144,9 @@ namespace dog::utilities::memoryalloc {
     DOG_DELETE(myBlock2, arena);
     DOG_DELETE_ARRAY(myBlock, arena);
 
-
     allocator.reset();
     allocator.dumpMemory();
-    
 
-    
   }
 #endif
 }

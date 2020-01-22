@@ -13,40 +13,37 @@ namespace dog::utilities::memoryalloc {
 
   void* LinearAllocator::allocate(std::size_t size, std::size_t alignment, std::size_t offset) {
 
-    union
-    {
-      void* as_void;
-      char* as_char;
-    };
-
-    as_char = _current;
+    APtr<char> p{_current};
     
-    DOG_LOGMSG("current ptr = " << as_void);
+    DOG_LOGMSG("current ptr = " << p.asVoid());
 
     // Offset pointer first, align it, and offset it back
-    as_char += offset;    
-    as_void = alignUp(as_void, alignment);
-    DOG_LOGMSG("aligned ptr = " << as_void);
-    as_char -= offset;
+    p += offset;    
+    p = alignUp(p.asVoid(), alignment);
+    DOG_LOGMSG("aligned ptr = " << p.asVoid());
+    p -= offset;
 
-    DOG_LOGMSG("current ptr after alignment + offset = " << as_void);
-
-    auto nLostBytes = as_char - _current;
+    DOG_LOGMSG("current ptr after alignment + offset = " << p.asVoid());
+	       
+    auto nLostBytes = p.asType() - _current;
     DOG_LOGMSG("number of bytes lost: " << nLostBytes);
-    for (auto i = 0; i < nLostBytes; ++i) *_current++ = 0xcd;
+    for (auto i = 0; i < nLostBytes; ++i) *_current++ = 0xcd;	       
 
 
     _current += offset;
     for (auto i = std::size_t{0}; i < size - 2 * offset; ++i) *_current++ = 0xab;
     _current += offset;
 
+    //_current += (as_char - _current) + size;
+    
     DOG_LOGMSG("current ptr after allocation = " << static_cast<void*>(_current));
     
     assert(!(_current >= _end));
 
     *_current = 0xcc;
- 
-    return as_void;
+
+    return p.asVoid();
+    //    return as_void;
   }
 
   void LinearAllocator::dumpMemory() {

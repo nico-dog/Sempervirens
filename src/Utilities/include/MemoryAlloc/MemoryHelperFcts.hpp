@@ -23,26 +23,51 @@
 
 namespace dog::utilities::memoryalloc {
 
-  // Set n bytes to value, used by bounds checker at allocation
-  inline void Memset(void* const ptr, std::uint8_t value, std::size_t n) {
+  template<typename T>
+  class APtr {
 
-    auto as_char = static_cast<char*>(ptr);
-    while (n > 0)
+    union
     {
-      *as_char++ = value;
-      --n;
-    }
+      void* as_void;
+      T* as_T;
+    };
+
+  public:
+    explicit APtr(void* ptr) : as_void{ptr} {};
+    explicit APtr(T* ptr) : as_T{ptr} {};
+    ~APtr() = default;
+    APtr(APtr const&) = default;
+
+    APtr& operator=(APtr const&) = default;
+    APtr& operator=(void* ptr) { as_void = ptr; return *this; }
+    APtr& operator=(T* ptr) { as_T = ptr; return *this; }
+    
+    inline APtr& operator++() { ++as_T; return *this; }
+    inline APtr operator++(int) { return {as_T++}; }
+    inline APtr& operator--() { --as_T; return *this; }
+    inline APtr operator--(int) { return {as_T--}; }
+    inline APtr& operator+=(std::size_t size) { as_T += size; return *this; }
+    inline APtr& operator-=(std::size_t size) { as_T -= size; return *this; }
+    inline T* operator+(std::size_t size) const { return as_T + size; }
+    inline T* operator-(std::size_t size) const { return as_T - size; }
+    inline T operator*() { return *as_T; }
+    
+    inline void* asVoid() const { return as_void; }
+    inline T* asType() const { return as_T; }
+  };
+
+  template<typename T>
+  inline void Memset(void* const ptr, T value) {
+
+    auto as_T = static_cast<T*>(ptr);
+    *as_T = value;
   }
 
-  // Check that n bytes have given value, used by bounds checker at deallocation
-  inline void Memcheck(void* const ptr, std::uint8_t value, std::size_t n) {
+  template<typename T>
+  inline void Memcheck(void* const ptr, T value) {
 
-    auto as_char = static_cast<char*>(ptr);
-    while (n > 0)
-    {
-      assert(static_cast<std::uint8_t>(*as_char++) == value);
-      --n;
-    }    
+    auto as_T = static_cast<T*>(ptr);
+    assert(*as_T == value);
   }
   
   // Align pointer up to next multiple of alignment
@@ -61,34 +86,28 @@ namespace dog::utilities::memoryalloc {
     std::size_t _size;
   };
 
-  template<typename T, typename... Args>
-  Block<T> New(void* ptr, Args&&... args);
+  template<typename T, class Arena, typename... Args>
+  Block<T> New(Arena& arena, Args&&... args);
 
   template<typename T, class Arena>
   void Delete(Block<T> block, Arena& arena);
 
   template<typename T, class Arena>
-  Block<T> NewArray(Arena& arena, std::size_t N, const char* file, int line);
-
+  Block<T> NewArray(Arena& arena, const char* file, int line, std::size_t N);
+  
   template<typename T, class Arena>
   void DeleteArray(Block<T>, Arena& arena);
 
-#define DOG_NEW(type, arena, ...) New<type>(arena.allocate(sizeof(type), std::alignment_of_v<type>, __FILENAME__, __LINE__), ##__VA_ARGS__)
+#define DOG_NEW(type, arena, ...) New<type>(arena, __FILENAME__, __LINE__, ##__VA_ARGS__)
 #define DOG_DELETE(block, arena) Delete(block, arena)
 
-#define DOG_NEW_ARRAY(type, arena, N) NewArray<type>(arena, N, __FILENAME__, __LINE__)
+#define DOG_NEW_ARRAY(type, arena, N) NewArray<type>(arena, __FILENAME__, __LINE__, N)
 #define DOG_DELETE_ARRAY(block, arena) DeleteArray(block, arena)
 
 #define DOG_B(value)  value
 #define DOG_kB(value) DOG_B(value)  * 1024
 #define DOG_MB(value) DOG_kB(value) * 1024
 #define DOG_GB(value) DOG_MB(value) * 1024
-
-  // size conversion operators
-  //constexpr std::size_t kB = 1024;
-  //constexpr std::size_t operator""_kB (unsigned long long v) { return std::size_t{v * kB}; }
-  //constexpr std::size_t operator""_MB (unsigned long long v) { return v * kB * kB; }
-  //constexpr std::size_t operator""_GB (unsigned long long v) { return v * kB * kB * kB; }
 }
 
 #include <MemoryAlloc/MemoryHelperFcts.inl>

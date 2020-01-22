@@ -13,13 +13,15 @@ namespace dog::utilities::memoryalloc {
   inline constexpr bool isPOD = IsPOD<T>::value;
 
   
-  template<typename T, typename... Args>
-  Block<T> New(void* ptr, Args&&... args) {
+  template<typename T, class Arena, typename... Args>
+  Block<T> New(Arena& arena, const char* file, int line, Args&&... args) {
 
+    void* ptr = arena.allocate(sizeof(T), std::alignment_of_v<T>, file, line);
+    
     if constexpr (isPOD<T>) return {static_cast<T*>(new (ptr) T{std::forward<Args>(args)...}), sizeof(T)};
     else return {static_cast<T*>(new (ptr) T(std::forward<Args>(args)...)), sizeof(T)};
   }
-
+  
   
   template<typename T, class Arena>
   void Delete(Block<T> block, Arena& arena) {
@@ -30,8 +32,8 @@ namespace dog::utilities::memoryalloc {
 
   
   template<typename T, class Arena>
-  Block<T> NewArray(Arena& arena, std::size_t N, const char* file, int line) {
-
+  Block<T> NewArray(Arena& arena, const char* file, int line, std::size_t N) {
+    
     if constexpr (isPOD<T>) return {static_cast<T*>(arena.allocate(sizeof(T) * N, std::alignment_of_v<T>, file, line)), sizeof(T) * N};
     else 
     {
