@@ -4,12 +4,12 @@
 // For use by Sempervirens applications.
 
 // ---------------------------------------------
-#include <Application.hpp>
-#include <EntryPoint.hpp>
+#include <Application/Application.hpp>
+#include <Application/EntryPoint.hpp>
 // ---------------------------------------------
 
-#include <Macros/Build.hpp>
-#include <Logging/Logger.hpp>
+//#include <Macros/Build.hpp>
+//#include <Logging/Logger.hpp>
 
 
 #endif

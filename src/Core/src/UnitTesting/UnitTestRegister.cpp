@@ -1,6 +1,6 @@
 #define UNITTESTREGISTER_CPP
 #include <UnitTesting/UnitTestRegister.hpp>
-//#include <vector>
+#include <Logging/ConsoleLogger.hpp>
 
 namespace sempervirens::core::unittesting {
 
@@ -10,6 +10,8 @@ namespace sempervirens::core::unittesting {
     UnitTestRegisterImpl() = default;
 
     std::vector<UnitTest> _unitTests;
+
+    sempervirens::core::log::ConsoleLogger _logger;
   };
 
   UnitTestRegister::UnitTestRegister() : _pImpl{new UnitTestRegisterImpl{}, [](UnitTestRegisterImpl* ptr){ delete ptr; }} {}

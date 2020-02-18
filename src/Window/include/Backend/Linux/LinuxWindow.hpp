@@ -1,0 +1,40 @@
+#ifndef LINUXWINDOW_HPP
+#define LINUXWINDOW_HPP
+#include <Interface/IWindow.hpp>
+#include <Macros/Build.hpp>
+#include <X11/Xlib.h>
+
+namespace sempervirens::window {
+
+  struct ScreenInfo {
+
+    int _id;
+    int _width;
+    int _height;
+    Window _rootWindow;
+    unsigned long _whitePixel;
+    unsigned long _blackPixel;
+    
+  };
+  
+  class LinuxWindow : public IWindow {
+
+    Display* _display{nullptr};
+    ScreenInfo _screen;
+    Window _window;
+    
+    bool initDisplay(WindowInfo const& windowInfo);
+    
+  public:
+    LinuxWindow(WindowInfo const& windowInfo);
+    ~LinuxWindow();
+
+    void onUpdate() override;
+   
+#if SEMPERVIRENS_BUILD(UNITTESTING)
+    void static test();
+#endif   
+  };
+  
+}
+#endif

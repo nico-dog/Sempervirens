@@ -20,8 +20,6 @@
 #ifndef LOGSINK_HPP
 #define LOGSINK_HPP
 #include <Logging/LogMsg.hpp>
-//#include <memory>
-//#include <fstream>
 
 namespace sempervirens::core::logging {
 

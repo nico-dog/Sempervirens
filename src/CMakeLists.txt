@@ -9,9 +9,12 @@ set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CMAKE_COMMAND} -E time")
 include(GNUInstallDirs) 
 
 
-# Imported targets 
+# Imported targets
+if(UNIX)
+find_package(X11 REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
+endif()
 
 
 # CTest
@@ -19,13 +22,12 @@ enable_testing()
 
 
 # Project tree
-add_subdirectory(Application)
+add_subdirectory(Vendors)
 add_subdirectory(Core)
-add_subdirectory(Imports)
-#add_subdirectory(Window)
+add_subdirectory(Window)
 #add_subdirectory(Input)
 #add_subdirectory(Renderer)
-
+add_subdirectory(Application)
 
 
 #######################################################
@@ -35,7 +37,10 @@ add_subdirectory(Imports)
 #######################################################
 
 add_library(sempervirens SHARED)
-target_sources(sempervirens PRIVATE $<TARGET_OBJECTS:core>)
+target_sources(sempervirens PRIVATE $<TARGET_OBJECTS:core> $<TARGET_OBJECTS:window> $<TARGET_OBJECTS:app>)
 target_link_libraries(sempervirens PRIVATE Threads::Threads)
+
+target_link_libraries(sempervirens PRIVATE X11::X11)
+
 
 

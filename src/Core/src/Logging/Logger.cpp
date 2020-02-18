@@ -1,57 +1,85 @@
 #define LOGGER_CPP
 #include <Logging/Logger.hpp>
-#include <Logging/LogSink.hpp>
-#include <Logging/Active.hpp>
-//#include <vector>
 
-namespace sempervirens::core::logging {
+namespace sempervirens::core::log {
 
-  class Logger::LoggerImpl {
+  Logger* Logger::_head = nullptr;
+  Logger* Logger::_tail = nullptr;
+  std::mutex Logger::_mutex{};
 
-  public:
-    LoggerImpl() = default;
-    ~LoggerImpl() = default;
-
-    //std::vector<LogSink> _sinks;
-    std::array<LogSink, 2> _sinks = {makeConsoleSink(),
-				     makeFileSink("/home/nico/Desktop/dog.log")};   
-    Active _active;  // Needs to be declared last for proper order of destruction
-  };
-
-  Logger::Logger() : _pImpl{new LoggerImpl{}, [](LoggerImpl* ptr){ delete ptr; }} {
+  void Logger::addToList(Logger* logger)
+  {
+    std::lock_guard<std::mutex> lock(Logger::_mutex);
     
-    //addSink(makeConsoleSink());
-    //addSink(makeFileSink("/home/nico/Desktop/dog.log"));
+    if (!Logger::_head)
+    {
+      Logger::_head = logger;
+      Logger::_tail = logger;
+      logger->_prev = nullptr;
+      logger->_next = nullptr;
+    }
+    else
+    {
+      Logger::_tail->_next = logger;
+      logger->_prev = Logger::_tail;
+      logger->_next = nullptr;
+      Logger::_tail = logger;
+    }         
   }
 
-  //void Logger::addSink(LogSink sink) {
+  void Logger::removeFromList(Logger* logger)
+  {
+    std::lock_guard<std::mutex> lock(Logger::_mutex);
+    
+    if (logger == Logger::_head)
+    {
+      if (logger == Logger::_tail)
+      {
+	Logger::_head = nullptr;
+	Logger::_tail = nullptr;
+      }
+      else
+      {
+	Logger::_head = logger->_next;
+	Logger::_head->_prev = nullptr;
+      }  
+      return;
+    }
 
-    //_pImpl->_sinks.push_back(std::move(sink));
-  //}
-  
-  void Logger::flush(LogMsg const* logMsg) {
+    if (logger == Logger::_tail)
+    {
+      Logger::_tail = logger->_prev;
+      Logger::_tail->_next = nullptr;
+      return;
+    }
 
-    _pImpl->_active.send([this,
-			  _meta{std::move(logMsg->_meta)},
-			  _msg{std::move(logMsg->_msg)}]()
-			 { for (auto const& sink : _pImpl->_sinks) log(sink, _meta, _msg); });
+    auto curr = Logger::_head->_next;
+    do
+    {
+      if (curr == logger)
+      {
+	auto prev = curr->_prev;
+	auto next = curr->_next;	
+	prev->_next = next;
+	next->_prev = prev;
+	break;
+      }
+      curr = curr->_next;
+    }
+    while (curr != Logger::_tail);
   }
-
-  LogMsg Logger::operator()(eLogLevel level, std::string file, std::string func, std::size_t line) {
-
-    return {this, level, std::move(file), std::move(func), line};
-  }
-
-
-#if SEMPERVIRENS_BUILD(UNITTESTING)
-  void Logger::test() {
-
-    auto i = 2;
-    SEMPERVIRENS_MSG("i has value " << i);
-    SEMPERVIRENS_DBG("i has value " << i);
-    SEMPERVIRENS_WRN("i has value " << i);
-    SEMPERVIRENS_ERR("i has value " << i);
-    SEMPERVIRENS_FAT("i has value " << i);  
-  }
-#endif  
 }
+
+std::ostream& operator<<(std::ostream& os, sempervirens::core::log::LogSeverity const& severity)
+{
+  using namespace sempervirens::core::log;
+  switch(severity)
+  {   
+    case LogSeverity::MSG: os << "> [MSG]"; break;
+    case LogSeverity::WRN: os << "> [WRN]"; break;
+    case LogSeverity::ERR: os << "> [ERR]"; break;
+    case LogSeverity::FAT: os << "> [FAT]"; break;
+    default: os << "> undefined log severity";
+  } 
+  return os;
+}  

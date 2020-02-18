@@ -1,5 +1,5 @@
 #include <UnitTesting/UnitTestRegister.hpp>
-#include <Logging/Logger.hpp>
+#include <Logging/ConsoleLogger.hpp>
 #include <fstream>
 
 class TestableType {
@@ -50,6 +50,8 @@ public:
 };
 
 int main() {
+
+  auto logger = sempervirens::core::log::ConsoleLogger{};
   
   auto reg = sempervirens::core::unittesting::UnitTestRegister();
 
