@@ -14,7 +14,8 @@ target_sources(core PRIVATE
   src/UnitTesting/UnitTest.cpp
   src/UnitTesting/UnitTestRegister.cpp
   src/MemoryAlloc/MemoryArea.cpp
-  src/MemoryAlloc/LinearAllocator.cpp)
+  src/MemoryAlloc/LinearAllocator.cpp
+  src/EventSystem/Event.cpp)
 if(UNIX)
 target_sources(core PRIVATE
   src/MemoryAlloc/MemoryAlloc_unix.cpp)

@@ -9,7 +9,7 @@
 // ---------------------------------------------
 
 //#include <Macros/Build.hpp>
-//#include <Logging/Logger.hpp>
+//#include <Logging/ConsoleLogger.hpp>
 
 
 #endif

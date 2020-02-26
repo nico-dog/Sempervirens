@@ -1,5 +1,6 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
+#include <Macros/Build.hpp>
 
 namespace sempervirens::core::log {
 
@@ -36,9 +37,9 @@ namespace sempervirens::core::log {
     static void removeFromList(Logger* logger);
   };
 
-  
-#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
+#if SEMPERVIRENS_BUILD(LOGGING)  
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #define SEMPERVIRENS_LOG(severity, msg) (	     \
     sempervirens::core::log::Logger::Log(            \
     sempervirens::core::log::LogSeverity::severity,  \
@@ -50,6 +51,9 @@ namespace sempervirens::core::log {
     ).str()	                                     \
   )                                                  \
 )
+#else
+#define SEMPERVIRENS_LOG(severity, msg) do {} while(0)
+#endif  
 #define SEMPERVIRENS_MSG(msg) SEMPERVIRENS_LOG(MSG, msg)
 #define SEMPERVIRENS_WRN(msg) SEMPERVIRENS_LOG(WRN, msg)
 #define SEMPERVIRENS_ERR(msg) SEMPERVIRENS_LOG(ERR, msg)

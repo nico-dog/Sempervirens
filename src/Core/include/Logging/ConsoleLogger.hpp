@@ -11,6 +11,9 @@ namespace sempervirens::core::log {
     ConsoleLogger();
     ~ConsoleLogger();
 
+    ConsoleLogger(ConsoleLogger const&) = delete;
+    ConsoleLogger& operator=(ConsoleLogger const&) = delete;
+    
     void log(LogSeverity severity, char const* file, char const* func, int line, std::string msg) override;
 
 #if SEMPERVIRENS_BUILD(UNITTESTING)

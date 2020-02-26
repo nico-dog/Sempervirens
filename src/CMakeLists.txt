@@ -38,9 +38,10 @@ add_subdirectory(Application)
 
 add_library(sempervirens SHARED)
 target_sources(sempervirens PRIVATE $<TARGET_OBJECTS:core> $<TARGET_OBJECTS:window> $<TARGET_OBJECTS:app>)
-target_link_libraries(sempervirens PRIVATE Threads::Threads)
+target_link_libraries(sempervirens PRIVATE
+  Threads::Threads
+  X11::X11)
 
-target_link_libraries(sempervirens PRIVATE X11::X11)
 
 
 

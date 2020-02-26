@@ -1,6 +1,7 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 #include <Interface/IWindow.hpp>
+#include <EventSystem/Event.hpp>
 
 namespace sempervirens::app {
 
@@ -14,10 +15,11 @@ namespace sempervirens::app {
     virtual ~Application() {};
 
     void run();
-    void onEvent();
+    void onEvent(sempervirens::core::event::Event& event);
+
   };
 
-  // To be defined by client.
+  // TO BE DEFINED BY CLIENT.
   Application* createApplication();
 }
 #endif

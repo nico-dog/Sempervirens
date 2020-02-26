@@ -13,8 +13,7 @@ namespace sempervirens::window {
     int _height;
     Window _rootWindow;
     unsigned long _whitePixel;
-    unsigned long _blackPixel;
-    
+    unsigned long _blackPixel;    
   };
   
   class LinuxWindow : public IWindow {
@@ -22,6 +21,11 @@ namespace sempervirens::window {
     Display* _display{nullptr};
     ScreenInfo _screen;
     Window _window;
+
+    int _width{0};
+    int _height{0};
+    int _xPos{0};
+    int _yPos{0};
     
     bool initDisplay(WindowInfo const& windowInfo);
     
@@ -29,8 +33,9 @@ namespace sempervirens::window {
     LinuxWindow(WindowInfo const& windowInfo);
     ~LinuxWindow();
 
+    void pollEvent() override;
     void onUpdate() override;
-   
+
 #if SEMPERVIRENS_BUILD(UNITTESTING)
     void static test();
 #endif   

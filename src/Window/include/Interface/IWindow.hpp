@@ -21,8 +21,10 @@ namespace sempervirens::window {
   public:
     virtual ~IWindow() = default;
 
+    virtual void pollEvent() = 0;
     virtual void onUpdate() = 0;
 
+    // Definition provided by backend concrete implementations.
     static IWindow* createWindow(WindowInfo const& info);
   };
 }
