@@ -1,7 +1,9 @@
 #define LINUXWWINDOW_CPP
 #include <Backend/Linux/LinuxWindow.hpp>
+#include <Backend/Linux/LinuxKeyCodes.hpp>
 #include <Logging/Logger.hpp>
 #include <EventSystem/Event.hpp>
+#include <X11/XKBlib.h>
 
 namespace sempervirens::window {
 
@@ -46,7 +48,6 @@ namespace sempervirens::window {
 				  windowInfo._widthRatio * _screen._width, windowInfo._heightRatio * _screen._height,
 				  1, _screen._blackPixel, // 1 pixel wide black border
 				  _screen._whitePixel);   // white background
-
     XStoreName(_display, _window, windowInfo._title.c_str());
 
     //auto gc = XCreateGC(_display, _window, 0,0);        
@@ -58,7 +59,11 @@ namespace sempervirens::window {
 		 ExposureMask        |  // For exposure events.
 		 StructureNotifyMask |  // For resize and move events.
 		 FocusChangeMask     |  // For focus in and out events.
-		 KeyPressMask);         // For key press/release events.
+		 KeyPressMask        |  // For key press events.
+		 KeyReleaseMask      |  // For key release events.
+		 ButtonPressMask     |  // For button press events.
+		 ButtonReleaseMask   |  // For button release events.
+		 PointerMotionMask);    // For mouse motion events, irrespective of button states.
 
     // Catch window close event from window manager.
     Atom wmDeleteMessage = XInternAtom(_display, "WM_DELETE_WINDOW", false);
@@ -86,7 +91,8 @@ namespace sempervirens::window {
     case ClientMessage:
     {
       Atom wmDeleteMessage = XInternAtom(_display, "WM_DELETE_WINDOW", false);
-      if (event.xclient.data.l[0] == static_cast<long int>(wmDeleteMessage))
+      auto client = event.xclient;
+      if (client.data.l[0] == static_cast<long int>(wmDeleteMessage))
       {
 	sempervirens::core::event::WindowCloseEvent closeEvent;
 	SEMPERVIRENS_SIGNAL(closeEvent);
@@ -103,7 +109,7 @@ namespace sempervirens::window {
     
     case ConfigureNotify:
     {
-      XConfigureEvent config = event.xconfigure;
+      auto config = event.xconfigure;
       if (config.width != _width || config.height != _height)
       {
 	sempervirens::core::event::WindowResizeEvent resizeEvent{config.width, config.height};
@@ -133,7 +139,20 @@ namespace sempervirens::window {
       sempervirens::core::event::WindowFocusOutEvent focusOutEvent{};
       SEMPERVIRENS_SIGNAL(focusOutEvent);
       break;
-    }    
+    }
+
+    case KeyPress:
+    {
+      auto key = event.xkey;
+      auto symbol = XkbKeycodeToKeysym(_display, key.keycode, 0, 0); // Can distinguish SHIFT modifier.
+      if (symbol == XK_1)
+      {
+	sempervirens::core::event::KeyPressEvent keyPressEvent{symbol};
+	SEMPERVIRENS_SIGNAL(keyPressEvent);
+      }
+    }
+
+    
       
     default:
       break;

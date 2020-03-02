@@ -12,6 +12,7 @@ target_precompile_headers(window PRIVATE ../Sempervirens_pch.hpp)
 # Set target include directories
 target_include_directories(window PUBLIC
   include
+  ../Input/include
   ../Core/include
   ../Misc)
 

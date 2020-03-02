@@ -74,12 +74,17 @@ namespace sempervirens::core::event {
   // Event types in Sempervirens.
   enum class EventType {
 
-    WindowClose,
-    WindowExpose,
-    WindowResize,
-    WindowMove,
-    WindowFocusIn,
-    WindowFocusOut
+    WindowClosed,
+    WindowExposed,
+    WindowResized,
+    WindowMoved,
+    WindowFocusedIn,
+    WindowFocusedOut,
+    KeyPressed,
+    KeyReleased,
+    MouseButtonPressed,
+    MouseButtonReleased,
+    MouseMoved
   };
  
   // Event base class inherited by concrete event classes.
@@ -108,7 +113,7 @@ namespace sempervirens::core::event {
     WindowCloseEvent() = default;
     ~WindowCloseEvent() = default;
     
-    inline EventType type() const override { return EventType::WindowClose; }
+    inline EventType type() const override { return EventType::WindowClosed; }
 
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];
@@ -121,7 +126,7 @@ namespace sempervirens::core::event {
     WindowExposeEvent() = default;
     ~WindowExposeEvent() = default;
     
-    inline EventType type() const override { return EventType::WindowExpose; }
+    inline EventType type() const override { return EventType::WindowExposed; }
 
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];
@@ -134,7 +139,7 @@ namespace sempervirens::core::event {
     WindowResizeEvent(int width, int height);
     ~WindowResizeEvent() = default;
     
-    inline EventType type() const override { return EventType::WindowResize; }
+    inline EventType type() const override { return EventType::WindowResized; }
 
     int _width;
     int _height;
@@ -150,7 +155,7 @@ namespace sempervirens::core::event {
     WindowMoveEvent(int xPos, int yPos);
     ~WindowMoveEvent() = default;
     
-    inline EventType type() const override { return EventType::WindowMove; }
+    inline EventType type() const override { return EventType::WindowMoved; }
 
     int _xPos;
     int _yPos;
@@ -166,7 +171,7 @@ namespace sempervirens::core::event {
     WindowFocusInEvent() = default;
     ~WindowFocusInEvent() = default;
     
-    inline EventType type() const override { return EventType::WindowFocusIn; }
+    inline EventType type() const override { return EventType::WindowFocusedIn; }
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];
@@ -179,11 +184,26 @@ namespace sempervirens::core::event {
     WindowFocusOutEvent() = default;
     ~WindowFocusOutEvent() = default;
     
-    inline EventType type() const override { return EventType::WindowFocusOut; }
+    inline EventType type() const override { return EventType::WindowFocusedOut; }
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];
-  };      
+  };
+
+  // Key press event.
+  class KeyPressEvent : public Event {
+
+  public:
+    KeyPressEvent(int code);
+    ~KeyPressEvent() = default;
+    
+    inline EventType type() const override { return EventType::KeyPressed; }
+
+    int _code;
+    
+    static int _nListeners;
+    static EventListener _listeners[nMaxListeners];    
+  };
 
   // Listener helper functions 
   template<typename T>

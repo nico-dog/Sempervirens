@@ -21,5 +21,9 @@ namespace sempervirens::core::event {
   EventListener WindowFocusInEvent::_listeners[nMaxListeners];
   int WindowFocusInEvent::_nListeners{0};
   EventListener WindowFocusOutEvent::_listeners[nMaxListeners];
-  int WindowFocusOutEvent::_nListeners{0};  
+  int WindowFocusOutEvent::_nListeners{0};
+
+  EventListener KeyPressEvent::_listeners[nMaxListeners];
+  int KeyPressEvent::_nListeners{0};
+  KeyPressEvent::KeyPressEvent(int code) : _code{code} {}
 }
