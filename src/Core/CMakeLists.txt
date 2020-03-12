@@ -4,11 +4,6 @@ project(core VERSION 1.0 LANGUAGES CXX)
 #add_library(core STATIC)
 add_library(core OBJECT)
 target_sources(core PRIVATE
-#  src/Logging/Active.cpp
-#  src/Logging/Logger.cpp
-#  src/Logging/LogMsg.cpp
-#  src/Logging/LogLevel.cpp
-#  src/Logging/LogSink.cpp
   src/Logging/Logger.cpp
   src/Logging/ConsoleLogger.cpp  
   src/UnitTesting/UnitTest.cpp
@@ -60,7 +55,7 @@ endif()
 
 
 # Link to imported targets
-target_link_libraries(core PRIVATE Threads::Threads)
+#target_link_libraries(core PRIVATE Threads::Threads)
 
 
 # Define tests

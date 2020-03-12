@@ -82,7 +82,11 @@ namespace sempervirens::app {
       auto& e = static_cast<KeyPressEvent&>(event);
 
       if (e._code == SEMPERVIRENS_1)
-	SEMPERVIRENS_MSG("Received KeyPressEvent");
+	SEMPERVIRENS_MSG("Received KeyPressEvent 1");
+      if (e._code == SEMPERVIRENS_A)
+	SEMPERVIRENS_MSG("Received KeyPressEvent A");
+      if (e._code == SEMPERVIRENS_a)
+	SEMPERVIRENS_MSG("Received KeyPressEvent a");
       return;
     }    
   }

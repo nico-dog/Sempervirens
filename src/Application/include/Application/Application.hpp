@@ -14,6 +14,9 @@ namespace sempervirens::app {
     Application();
     virtual ~Application() {};
 
+    Application(Application const&) = delete;
+    Application& operator=(Application const&) = delete;
+
     void run();
     void onEvent(sempervirens::core::event::Event& event);
 

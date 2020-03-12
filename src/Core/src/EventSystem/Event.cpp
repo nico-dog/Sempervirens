@@ -25,5 +25,5 @@ namespace sempervirens::core::event {
 
   EventListener KeyPressEvent::_listeners[nMaxListeners];
   int KeyPressEvent::_nListeners{0};
-  KeyPressEvent::KeyPressEvent(int code) : _code{code} {}
+  KeyPressEvent::KeyPressEvent(long unsigned int code) : _code{code} {}
 }

@@ -1,6 +1,8 @@
 #ifndef ENTRYPOINT_HPP
 #define ENTRYPOINT_HPP
+#if SEMPERVIRENS_BUILD(LOGGING)  
 #include <Logging/ConsoleLogger.hpp>
+#endif
 
 extern sempervirens::app::Application* sempervirens::app::createApplication();
 

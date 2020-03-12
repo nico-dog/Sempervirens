@@ -65,7 +65,7 @@ namespace sempervirens::window {
 		 ButtonReleaseMask   |  // For button release events.
 		 PointerMotionMask);    // For mouse motion events, irrespective of button states.
 
-    // Catch window close event from window manager.
+    // Intercept window close event from window manager.
     Atom wmDeleteMessage = XInternAtom(_display, "WM_DELETE_WINDOW", false);
     XSetWMProtocols(_display, _window, &wmDeleteMessage, 1);
     
@@ -144,12 +144,12 @@ namespace sempervirens::window {
     case KeyPress:
     {
       auto key = event.xkey;
-      auto symbol = XkbKeycodeToKeysym(_display, key.keycode, 0, 0); // Can distinguish SHIFT modifier.
-      if (symbol == XK_1)
-      {
-	sempervirens::core::event::KeyPressEvent keyPressEvent{symbol};
-	SEMPERVIRENS_SIGNAL(keyPressEvent);
-      }
+      auto symbol = XkbKeycodeToKeysym(_display, key.keycode, 0, key.state & ShiftMask ? 1 : 0); // Can distinguish SHIFT modifier.
+      //if (symbol == XK_1)
+      //{
+      sempervirens::core::event::KeyPressEvent keyPressEvent{symbol};
+      SEMPERVIRENS_SIGNAL(keyPressEvent);
+      //}
     }
 
     

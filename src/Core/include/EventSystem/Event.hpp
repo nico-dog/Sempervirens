@@ -194,12 +194,12 @@ namespace sempervirens::core::event {
   class KeyPressEvent : public Event {
 
   public:
-    KeyPressEvent(int code);
+    KeyPressEvent(long unsigned int code);
     ~KeyPressEvent() = default;
     
     inline EventType type() const override { return EventType::KeyPressed; }
 
-    int _code;
+    long unsigned int _code;
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];    

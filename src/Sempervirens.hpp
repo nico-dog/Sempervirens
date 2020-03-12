@@ -2,14 +2,12 @@
 #define SEMPERVIRENS_HPP
 
 // For use by Sempervirens applications.
+#include <Sempervirens_pch.hpp>
 
 // ---------------------------------------------
 #include <Application/Application.hpp>
 #include <Application/EntryPoint.hpp>
 // ---------------------------------------------
-
-//#include <Macros/Build.hpp>
-//#include <Logging/ConsoleLogger.hpp>
 
 
 #endif
