@@ -33,7 +33,7 @@ if(UNIX)
 target_link_libraries(${PROJECT_NAME} INTERFACE X11::X11)
 endif()
 
-#set(CMAKE_INSTALL_PREFIX "/home/nico/Desktop/Test")
+set(CMAKE_INSTALL_PREFIX "/home/nico/Desktop/Test")
 
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<INSTALL_INTERFACE:include/${CMAKE_PROJECT_NAME}>)
@@ -63,7 +63,11 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/Core/include/MemoryAlloc
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/Window/include/Interface
         DESTINATION include/${CMAKE_PROJECT_NAME})
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/Window/include/Backend
-        DESTINATION include/${CMAKE_PROJECT_NAME})	
+        DESTINATION include/${CMAKE_PROJECT_NAME})
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Interface
+        DESTINATION include/${CMAKE_PROJECT_NAME})
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Backend
+        DESTINATION include/${CMAKE_PROJECT_NAME})		
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/Misc/Macros
         DESTINATION include/${CMAKE_PROJECT_NAME})
 

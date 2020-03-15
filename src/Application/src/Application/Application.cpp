@@ -1,10 +1,10 @@
 #define APPLICATION_CPP
 #include <Application/Application.hpp>
-#include <Interface/KeyCodes.hpp>
+#include <Interface/KeySymbols.hpp>
 #include <Logging/Logger.hpp>
 
 using namespace sempervirens::window;
-using namespace sempervirens::input;
+using namespace sempervirens::input::keyboard;
 using namespace sempervirens::core::event;
 
 namespace sempervirens::app {
@@ -22,6 +22,8 @@ namespace sempervirens::app {
     SEMPERVIRENS_LISTEN(this, WindowFocusInEvent);
     SEMPERVIRENS_LISTEN(this, WindowFocusOutEvent);
     SEMPERVIRENS_LISTEN(this, KeyPressEvent);
+    SEMPERVIRENS_LISTEN(this, KeyReleaseEvent);
+    SEMPERVIRENS_LISTEN(this, MouseMoveEvent);
   }
   
   void Application::run()
@@ -81,14 +83,35 @@ namespace sempervirens::app {
     {
       auto& e = static_cast<KeyPressEvent&>(event);
 
-      if (e._code == SEMPERVIRENS_1)
-	SEMPERVIRENS_MSG("Received KeyPressEvent 1");
-      if (e._code == SEMPERVIRENS_A)
-	SEMPERVIRENS_MSG("Received KeyPressEvent A");
-      if (e._code == SEMPERVIRENS_a)
-	SEMPERVIRENS_MSG("Received KeyPressEvent a");
+      if (e._symbol == KEY_1)
+	SEMPERVIRENS_MSG("Received KeyPressEvent " << e._chr);
+      if (e._symbol == KEY_A)
+	SEMPERVIRENS_MSG("Received KeyPressEvent " << e._chr);
+      if (e._symbol == KEY_a)
+	SEMPERVIRENS_MSG("Received KeyPressEvent " << e._chr);
+      return;
+    }
+
+    if (event.type() == EventType::KeyReleased)
+    {
+      auto& e = static_cast<KeyReleaseEvent&>(event);
+
+      if (e._symbol == KEY_1)
+	SEMPERVIRENS_MSG("Received KeyReleaseEvent " << e._chr);
+      if (e._symbol == KEY_A)
+	SEMPERVIRENS_MSG("Received KeyReleaseEvent " << e._chr);
+      if (e._symbol == KEY_a)
+	SEMPERVIRENS_MSG("Received KeyReleaseEvent " << e._chr);
       return;
     }    
+
+    if (event.type() == EventType::MouseMoved)
+    {
+      auto& e = static_cast<MouseMoveEvent&>(event);
+      SEMPERVIRENS_MSG("Received MouseMoveEvent for xPos: " << e._xPos << ", yPos: " << e._yPos);
+      return;
+    }
+    
   }
 
 

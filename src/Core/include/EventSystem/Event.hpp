@@ -1,12 +1,12 @@
 #ifndef EVENT_HPP
 #define EVENT_HPP
-#include <Logging/Logger.hpp>
+#include <Interface/KeySymbols.hpp>
 
 namespace sempervirens::core::event {
 
   // This is the delegate implementation from Stefan Reinhalter presented in
   // Game Engine Gems 3: http://www.gameenginegems.net/geg3.php
-  // Added comparison operators.
+  // Just Added comparison operators.
   template <typename T>
   class Delegate {};
 
@@ -194,15 +194,49 @@ namespace sempervirens::core::event {
   class KeyPressEvent : public Event {
 
   public:
-    KeyPressEvent(long unsigned int code);
+    KeyPressEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr);
     ~KeyPressEvent() = default;
     
     inline EventType type() const override { return EventType::KeyPressed; }
 
-    long unsigned int _code;
+    sempervirens::input::keyboard::Keysym _symbol;
+    sempervirens::input::keyboard::Keychr _chr;
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];    
+  };
+
+
+  // Key release event.
+  class KeyReleaseEvent : public Event {
+
+  public:
+    KeyReleaseEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr);
+    ~KeyReleaseEvent() = default;
+    
+    inline EventType type() const override { return EventType::KeyReleased; }
+
+    sempervirens::input::keyboard::Keysym _symbol;
+    sempervirens::input::keyboard::Keychr _chr;
+    
+    static int _nListeners;
+    static EventListener _listeners[nMaxListeners];    
+  };  
+
+  // Mouse move event.
+  class MouseMoveEvent : public Event {
+
+  public:
+    MouseMoveEvent(int xPos, int yPos);
+    ~MouseMoveEvent() = default;
+
+    inline EventType type() const override { return EventType::MouseMoved; }
+
+    int _xPos;
+    int _yPos;
+
+    static int _nListeners;
+    static EventListener _listeners[nMaxListeners];       
   };
 
   // Listener helper functions 

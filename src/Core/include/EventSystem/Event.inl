@@ -1,3 +1,5 @@
+#include <Logging/Logger.hpp>
+
 namespace sempervirens::core::event {
 
   template<typename T>

@@ -1,6 +1,6 @@
 #define LINUXWWINDOW_CPP
 #include <Backend/Linux/LinuxWindow.hpp>
-#include <Backend/Linux/LinuxKeyCodes.hpp>
+#include <Backend/Linux/LinuxKeySymbols.hpp>
 #include <Logging/Logger.hpp>
 #include <EventSystem/Event.hpp>
 #include <X11/XKBlib.h>
@@ -61,9 +61,17 @@ namespace sempervirens::window {
 		 FocusChangeMask     |  // For focus in and out events.
 		 KeyPressMask        |  // For key press events.
 		 KeyReleaseMask      |  // For key release events.
-		 ButtonPressMask     |  // For button press events.
-		 ButtonReleaseMask   |  // For button release events.
+		 ButtonPressMask     |  // For mouse button press events.
+		 ButtonReleaseMask   |  // For mouse button release events.
 		 PointerMotionMask);    // For mouse motion events, irrespective of button states.
+
+
+    // Enable detectable auto repeat for key pressed events.
+    auto detectableAutoRepeatIsEnabled = XkbSetDetectableAutoRepeat(_display, true, nullptr); 
+    if (detectableAutoRepeatIsEnabled)
+      SEMPERVIRENS_MSG("Detectable auto repeat is enabled.");
+    // Note: if not supported we could go around by using XQueryKeymap that returns an array of 32 bytes where each bit
+    // is set if the corresponding key is held down.
 
     // Intercept window close event from window manager.
     Atom wmDeleteMessage = XInternAtom(_display, "WM_DELETE_WINDOW", false);
@@ -82,7 +90,7 @@ namespace sempervirens::window {
     XEvent event;
     // If the event queue is empty, XNextEvent blocks till the next event is received.
     // Avoid blocking by checking is the queue contains events before calling XNextEvent.
-    if (XEventsQueued(_display, QueuedAfterFlush))
+    if (XPending(_display)) // Equivalent to XEventsQueued(_display, QueuedAfterFlush)
       XNextEvent(_display, &event);
     else return;
     
@@ -128,6 +136,13 @@ namespace sempervirens::window {
       }
     }
 
+    case MotionNotify:
+    {
+      auto motion = event.xmotion;
+      sempervirens::core::event::MouseMoveEvent moveEvent{motion.x, motion.y};
+      SEMPERVIRENS_SIGNAL(moveEvent);
+    }
+
     case FocusIn:
     {
       sempervirens::core::event::WindowFocusInEvent focusInEvent{};
@@ -144,15 +159,40 @@ namespace sempervirens::window {
     case KeyPress:
     {
       auto key = event.xkey;
-      auto symbol = XkbKeycodeToKeysym(_display, key.keycode, 0, key.state & ShiftMask ? 1 : 0); // Can distinguish SHIFT modifier.
-      //if (symbol == XK_1)
-      //{
-      sempervirens::core::event::KeyPressEvent keyPressEvent{symbol};
+      auto symbol = XkbKeycodeToKeysym(_display, key.keycode, 0, key.state & ShiftMask ? 1 : 0);
+      if (symbol == NoSymbol)
+      {
+	SEMPERVIRENS_ERR("Key pressed has no symbol");
+	break;
+      }
+
+      auto chr = XKeysymToString(symbol);
+
+      SEMPERVIRENS_MSG("Key pressed event for " << chr);
+      
+      sempervirens::core::event::KeyPressEvent keyPressEvent{symbol, chr};
       SEMPERVIRENS_SIGNAL(keyPressEvent);
-      //}
+      break;
     }
 
-    
+    case KeyRelease:
+    {      
+      auto key = event.xkey;
+      auto symbol = XkbKeycodeToKeysym(_display, key.keycode, 0, key.state & ShiftMask ? 1 : 0);
+      if (symbol == NoSymbol)
+      {
+	SEMPERVIRENS_ERR("Key released has no symbol");
+	break;
+      }
+
+      auto chr = XKeysymToString(symbol);
+
+      SEMPERVIRENS_MSG("Key released event for " << chr);
+      
+      sempervirens::core::event::KeyReleaseEvent keyReleaseEvent{symbol, chr};
+      SEMPERVIRENS_SIGNAL(keyReleaseEvent);
+      break;
+    }   
       
     default:
       break;
