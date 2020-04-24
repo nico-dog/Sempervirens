@@ -1,14 +1,13 @@
 #ifndef BOUNDSCHECKINGPOLICY_HPP
 #define BOUNDSCHECKINGPOLICY_HPP
 #include <MemoryAlloc/MemoryHelperFcts.hpp>
-//#include <cstdint>
 
-namespace sempervirens::core::memoryalloc {
-
+namespace sempervirens::core::memoryalloc
+{
   class VoidBoundsChecker {};
   
-  class BoundsChecker {
-    
+  class BoundsChecker
+  {  
   public:
     static const std::uint32_t GUARD_VALUE = 0xbcbcbcbc;
     static const size_t FRONT_GUARD_SIZE = sizeof(GUARD_VALUE); // 4B of guards
@@ -21,8 +20,8 @@ namespace sempervirens::core::memoryalloc {
     inline void checkBack(void* const ptr) const { Memcheck(ptr, GUARD_VALUE); }
   };
   
-  class ExtendedBoundsChecker {
-    
+  class ExtendedBoundsChecker
+  {  
   public:
     static const std::uint32_t GUARD_VALUE = 0xbcbcbcbc;
     static const size_t FRONT_EXTRA_SIZE = 1; // 1B for offset from previous alloc 
@@ -30,24 +29,24 @@ namespace sempervirens::core::memoryalloc {
     static const size_t FRONT_GUARD_SIZE = sizeof(GUARD_VALUE) + FRONT_EXTRA_SIZE; 
     static const size_t BACK_GUARD_SIZE = sizeof(GUARD_VALUE) + BACK_EXTRA_SIZE; 
     
-    inline void guardFront(void* const ptr, std::uint8_t offset) const {
-
+    inline void guardFront(void* const ptr, std::uint8_t offset) const
+    {
       Memset(ptr, offset);     
       APtr<std::uint8_t> p{ptr};
       ++p;
       Memset(p.asVoid(), GUARD_VALUE);
     }
     
-    inline void guardBack(void* const ptr, std::uint32_t size) const {
-
+    inline void guardBack(void* const ptr, std::uint32_t size) const
+    {
       Memset(ptr, size);
       APtr<std::uint32_t> p{ptr};
       ++p;
       Memset(p.asVoid(), GUARD_VALUE);
     }
  
-    inline void checkAllGuards(void* end, void* const begin) const {
-
+    inline void checkAllGuards(void* end, void* const begin) const
+    {
       void* startAlloc{nullptr};
       APtr<std::uint32_t> p{end};
       do {

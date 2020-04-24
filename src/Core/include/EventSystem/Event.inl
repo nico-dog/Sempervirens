@@ -1,7 +1,7 @@
 #include <Logging/Logger.hpp>
 
-namespace sempervirens::core::event {
-
+namespace sempervirens::core::event
+{
   template<typename T>
   EventListener createListener(T* obj)
   {

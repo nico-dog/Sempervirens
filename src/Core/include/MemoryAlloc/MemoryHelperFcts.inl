@@ -1,12 +1,12 @@
 //#include <utility>
 
-namespace sempervirens::core::memoryalloc {
-
+namespace sempervirens::core::memoryalloc
+{
   // Define POD type for optimizations
   // std::is_pod<T>::value was deprecated in C++20, considered equivalent to what is implemented below
   template<typename T>
-  struct IsPOD {
-
+  struct IsPOD
+  {
     static const bool value = std::conjunction_v<std::is_trivial<T>, std::is_standard_layout<T>>;
   };
   template<typename T>
@@ -14,8 +14,8 @@ namespace sempervirens::core::memoryalloc {
 
   
   template<typename T, class Arena, typename... Args>
-  Block<T> New(Arena& arena, const char* file, int line, Args&&... args) {
-
+  Block<T> New(Arena& arena, const char* file, int line, Args&&... args)
+  {
     void* ptr = arena.allocate(sizeof(T), std::alignment_of_v<T>, file, line);
     
     if constexpr (isPOD<T>) return {static_cast<T*>(new (ptr) T{std::forward<Args>(args)...}), sizeof(T)};
@@ -24,16 +24,16 @@ namespace sempervirens::core::memoryalloc {
   
   
   template<typename T, class Arena>
-  void Delete(Block<T> block, Arena& arena) {
-
+  void Delete(Block<T> block, Arena& arena)
+  {
     if constexpr (!isPOD<T>) block._ptr->~T();
     arena.deallocate(block._ptr, block._size);
   }
 
   
   template<typename T, class Arena>
-  Block<T> NewArray(Arena& arena, const char* file, int line, std::size_t N) {
-    
+  Block<T> NewArray(Arena& arena, const char* file, int line, std::size_t N)
+  {  
     if constexpr (isPOD<T>) return {static_cast<T*>(arena.allocate(sizeof(T) * N, std::alignment_of_v<T>, file, line)), sizeof(T) * N};
     else 
     {
@@ -56,8 +56,8 @@ namespace sempervirens::core::memoryalloc {
 
   
   template<typename T, class Arena>
-  void DeleteArray(Block<T> block, Arena& arena) {
-
+  void DeleteArray(Block<T> block, Arena& arena)
+  {
     if constexpr (isPOD<T>) arena.dealocate(block._ptr, block._size);
     else
     {

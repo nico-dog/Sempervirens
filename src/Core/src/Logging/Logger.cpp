@@ -1,13 +1,13 @@
 #define LOGGER_CPP
 #include <Logging/Logger.hpp>
 
-namespace sempervirens::core::log {
-
+namespace sempervirens::core::logging
+{
   Logger* Logger::_head = nullptr;
   Logger* Logger::_tail = nullptr;
   std::mutex Logger::_mutex{};
 
-  void Logger::addToList(Logger* logger)
+  void Logger::AddToList(Logger* logger)
   {
     std::lock_guard<std::mutex> lock(Logger::_mutex);
     
@@ -27,7 +27,7 @@ namespace sempervirens::core::log {
     }         
   }
 
-  void Logger::removeFromList(Logger* logger)
+  void Logger::RemoveFromList(Logger* logger)
   {
     std::lock_guard<std::mutex> lock(Logger::_mutex);
     
@@ -70,9 +70,9 @@ namespace sempervirens::core::log {
   }
 }
 
-std::ostream& operator<<(std::ostream& os, sempervirens::core::log::LogSeverity const& severity)
+std::ostream& operator<<(std::ostream& os, sempervirens::core::logging::LogSeverity const& severity)
 {
-  using namespace sempervirens::core::log;
+  using namespace sempervirens::core::logging;
   switch(severity)
   {   
     case LogSeverity::MSG: os << "> [MSG]"; break;

@@ -3,26 +3,24 @@
 #include <Logging/Logger.hpp>
 
 #if SEMPERVIRENS_BUILD(UNITTESTING)
-#include <MemoryAlloc/MemoryAlloc.hpp>
+#include <MemoryAlloc/MemoryAllocHeap.hpp>
 #include <MemoryAlloc/MemoryArea.hpp>
 #include <MemoryAlloc/LinearAllocator.hpp>
-//#include <array>
-//#include <stdlib.h>
 #endif
 
 
-namespace sempervirens::core::memoryalloc {
-
+namespace sempervirens::core::memoryalloc
+{
   template<class AllocationPolicy, class BoundsCheckingPolicy>
-  MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::MemoryArena(AllocationPolicy* allocator, std::string description) : _allocator{allocator} {
-
+  MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::MemoryArena(AllocationPolicy* allocator, std::string description) : _allocator{allocator}
+  {
     SEMPERVIRENS_MSG("Memory arena ctor: " << std::move(description)
 	       << "\n> .. allocator begin at: " << _allocator->begin());
   }
 
   template<class AllocationPolicy, class BoundsCheckingPolicy>
-  void* MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::allocate(std::size_t size, std::size_t alignment, const char* file, int line) {
-
+  void* MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::allocate(std::size_t size, std::size_t alignment, const char* file, int line)
+  {
     // We return the address from the allocator directly if no bounds checking is required. In this case no offset is introduced.
     if constexpr (std::is_same_v<BoundsCheckingPolicy, VoidBoundsChecker>)
     {
@@ -66,8 +64,8 @@ namespace sempervirens::core::memoryalloc {
   }
 
   template<class AllocationPolicy, class BoundsCheckingPolicy>
-  void MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::deallocate(void* ptr, std::size_t size) {
-
+  void MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::deallocate(void* ptr, std::size_t size)
+  {
     // Simply deallocate memory if no bounds checking is required.
     if constexpr (std::is_same_v<BoundsCheckingPolicy, VoidBoundsChecker>)
     {
@@ -75,7 +73,7 @@ namespace sempervirens::core::memoryalloc {
     }
     else
     // The simple bounds checker checks the front and back guards of the current allocation before
-    // releasing the memory. The extending bounds checker checks the guards of all allocations before
+    // releasing the memory. The extended bounds checker checks the guards of all allocations before
     // releasing the memory.
     {
       APtr<char> p{ptr};
@@ -100,8 +98,8 @@ namespace sempervirens::core::memoryalloc {
   
 #if SEMPERVIRENS_BUILD(UNITTESTING)
   template<class AllocationPolicy, class BoundsCheckingPolicy>
-  void MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::test() {
-    
+  void MemoryArena<AllocationPolicy, BoundsCheckingPolicy>::Test()
+  {  
     auto areaSize = std::size_t{SEMPERVIRENS_B(64)};
     
     char* stackArea[areaSize] = {0};
@@ -113,14 +111,16 @@ namespace sempervirens::core::memoryalloc {
     //auto arena = MemoryArena<LinearAllocator, BoundsChecker>{&allocator, "Linear arena on stack"};
     auto arena = MemoryArena<LinearAllocator, ExtendedBoundsChecker>{&allocator, "Linear arena on stack"};
 
-    struct MyObject {
+    struct MyObject
+    {
       int _value;
       MyObject() { SEMPERVIRENS_MSG("MyObject default ctor"); }
       explicit MyObject(int val) : _value{val} { SEMPERVIRENS_MSG("MyObject ctor"); }
       ~MyObject() { SEMPERVIRENS_MSG("MyObject dtor"); }
     };
 
-    struct MyPOD {
+    struct MyPOD
+    {
       int _value;
     };
 

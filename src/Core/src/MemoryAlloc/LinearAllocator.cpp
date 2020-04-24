@@ -2,18 +2,15 @@
 #include <MemoryAlloc/LinearAllocator.hpp>
 #include <MemoryAlloc/MemoryHelperFcts.hpp>
 #include <Logging/Logger.hpp>
-//#include <iomanip>
-//#include <sstream>
-//#include <cassert>
 
-namespace sempervirens::core::memoryalloc {
-
+namespace sempervirens::core::memoryalloc
+{
   LinearAllocator::LinearAllocator(void* ptr, std::size_t size) :
     _begin{static_cast<char*>(ptr)}, _current{_begin}, _end{_begin + size} {}  
 
 
-  void* LinearAllocator::allocate(std::size_t size, std::size_t alignment, std::size_t offset) {
-
+  void* LinearAllocator::allocate(std::size_t size, std::size_t alignment, std::size_t offset)
+  {
     APtr<char> p{_current};
     
     SEMPERVIRENS_MSG("current ptr = " << p.asVoid());
@@ -47,8 +44,8 @@ namespace sempervirens::core::memoryalloc {
     //    return as_void;
   }
 
-  void LinearAllocator::dumpMemory() {
-
+  void LinearAllocator::dumpMemory()
+  {
     SEMPERVIRENS_MSG("Memory dump:");
 
     std::stringstream s{};

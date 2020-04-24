@@ -2,8 +2,8 @@
 #define EVENT_HPP
 #include <Interface/KeySymbols.hpp>
 
-namespace sempervirens::core::event {
-
+namespace sempervirens::core::event
+{
   // This is the delegate implementation from Stefan Reinhalter presented in
   // Game Engine Gems 3: http://www.gameenginegems.net/geg3.php
   // Just Added comparison operators.
@@ -72,8 +72,8 @@ namespace sempervirens::core::event {
   };
 
   // Event types in Sempervirens.
-  enum class EventType {
-
+  enum class EventType
+  {
     WindowClosed,
     WindowExposed,
     WindowResized,
@@ -87,9 +87,9 @@ namespace sempervirens::core::event {
     MouseMoved
   };
  
-  // Event base class inherited by concrete event classes.
-  class Event {
-   
+  // Event base class inherited from by concrete event classes.
+  class Event
+  { 
   public:
     virtual ~Event() {};
 
@@ -106,9 +106,8 @@ namespace sempervirens::core::event {
   constexpr int nMaxListeners{5};
   
   // Window events.
-  // Window close event.
-  class WindowCloseEvent : public Event {
-
+  class WindowCloseEvent : public Event
+  {
   public:
     WindowCloseEvent() = default;
     ~WindowCloseEvent() = default;
@@ -119,9 +118,8 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];
   };
 
-  // Window expose event.
-  class WindowExposeEvent : public Event {
-
+  class WindowExposeEvent : public Event
+  {
   public:
     WindowExposeEvent() = default;
     ~WindowExposeEvent() = default;
@@ -132,9 +130,8 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];
   }; 
 
-  // Window resize event.
-  class WindowResizeEvent : public Event {
-
+  class WindowResizeEvent : public Event
+  {
   public:
     WindowResizeEvent(int width, int height);
     ~WindowResizeEvent() = default;
@@ -148,9 +145,8 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];
   };
 
-  // Window move event.
-  class WindowMoveEvent : public Event {
-
+  class WindowMoveEvent : public Event
+  {
   public:
     WindowMoveEvent(int xPos, int yPos);
     ~WindowMoveEvent() = default;
@@ -164,9 +160,8 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];
   };
 
-  // Window focus in event.
-  class WindowFocusInEvent : public Event {
-
+  class WindowFocusInEvent : public Event
+  {
   public:
     WindowFocusInEvent() = default;
     ~WindowFocusInEvent() = default;
@@ -177,9 +172,8 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];
   };
 
-  // Window focus out event.
-  class WindowFocusOutEvent : public Event {
-
+  class WindowFocusOutEvent : public Event
+  {
   public:
     WindowFocusOutEvent() = default;
     ~WindowFocusOutEvent() = default;
@@ -190,9 +184,9 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];
   };
 
-  // Key press event.
-  class KeyPressEvent : public Event {
-
+  // Key events.
+  class KeyPressEvent : public Event
+  {
   public:
     KeyPressEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr);
     ~KeyPressEvent() = default;
@@ -206,10 +200,8 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];    
   };
 
-
-  // Key release event.
-  class KeyReleaseEvent : public Event {
-
+  class KeyReleaseEvent : public Event
+  {
   public:
     KeyReleaseEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr);
     ~KeyReleaseEvent() = default;
@@ -223,9 +215,9 @@ namespace sempervirens::core::event {
     static EventListener _listeners[nMaxListeners];    
   };  
 
-  // Mouse move event.
-  class MouseMoveEvent : public Event {
-
+  // Mouse events.
+  class MouseMoveEvent : public Event
+  {
   public:
     MouseMoveEvent(int xPos, int yPos);
     ~MouseMoveEvent() = default;

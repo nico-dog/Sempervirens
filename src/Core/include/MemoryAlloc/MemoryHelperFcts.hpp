@@ -1,29 +1,13 @@
-//***************************************************
-//
-// Definition of helper functions
-// Following implementation from Molecular Matters (https://blog.molecular-matters.com/2011/07/07/memory-system-part-2/)
-
-// - DOG_NEW: calls the new op. with placement syntax -> calls void* operator new(size_t bytes, void* ptr)
-//            which does not allocate but returns pointer provided by arena after constructing 'type' at that location
-//            Final 'type' in macro expansion allows to pass ctor arguments
-// - DOG_DELETE: calls the Delete function
-// - DOG_NEW_ARRAY/DOG_DELETE_ARRAY: call resp. NewArray and DeleteArray functions.
-//                                   Both are optimized for POD vs non-POD types (i.e., no ctor/dtor calls for POD types)
-//
-//***************************************************
 #ifndef MEMORYHELPERFCTS_HPP
 #define MEMORYHELPERFCTS_HPP
-//#include <type_traits>
-//#include <cstdint>
-//#include <cassert>
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-namespace sempervirens::core::memoryalloc {
-
+namespace sempervirens::core::memoryalloc
+{
   template<typename T>
-  class APtr {
-
+  class APtr
+  {
     union
     {
       void* as_void;
@@ -55,22 +39,22 @@ namespace sempervirens::core::memoryalloc {
   };
 
   template<typename T>
-  inline void Memset(void* const ptr, T value) {
-
+  inline void Memset(void* const ptr, T value)
+  {
     auto as_T = static_cast<T*>(ptr);
     *as_T = value;
   }
 
   template<typename T>
-  inline void Memcheck(void* const ptr, T value) {
-
+  inline void Memcheck(void* const ptr, T value)
+  {
     auto as_T = static_cast<T*>(ptr);
     assert(*as_T == value);
   }
   
   // Align pointer up to next multiple of alignment
-  inline void* alignUp(void* ptr, std::size_t alignment) {
-
+  inline void* alignUp(void* ptr, std::size_t alignment)
+  {
     // Need to cast to integral type to perform pointer bitwise op.
     // uintptr_t is an integer type guaranteed to be large enough to store a ptr
     return reinterpret_cast<void*>((reinterpret_cast<std::uintptr_t>(ptr) + alignment - 1) & ~(alignment - 1));

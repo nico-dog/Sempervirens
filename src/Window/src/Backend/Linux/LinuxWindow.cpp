@@ -216,7 +216,7 @@ namespace sempervirens::window {
   }
 
 #if SEMPERVIRENS_BUILD(UNITTESTING)
-  void LinuxWindow::test()
+  void LinuxWindow::Test()
   {
     auto windowInfo = WindowInfo{"Test Window", 0, 0, 1.0f / 2, 2.0f / 3};
     auto window = static_cast<LinuxWindow*>(createWindow(windowInfo));

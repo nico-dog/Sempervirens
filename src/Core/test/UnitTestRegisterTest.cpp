@@ -2,8 +2,8 @@
 #include <Logging/ConsoleLogger.hpp>
 #include <fstream>
 
-class TestableType {
-  
+class TestableType
+{  
   int _val{0};
   
 public:
@@ -11,8 +11,8 @@ public:
   void add(int n) { SEMPERVIRENS_MSG("TestableType::add: " << n); _val += n; }
 
 #if SEMPERVIRENS_BUILD(UNITTESTING)
-  void static test() {
-
+  void static Test()
+  {
     TestableType t{};
     t.print();
     t.add(2);
@@ -21,8 +21,8 @@ public:
 #endif
 };
 
-class MyType {
-  
+class MyType
+{  
   int _val{0};
   
 public:
@@ -31,27 +31,29 @@ public:
 };
 
 auto closure = [](int val){ SEMPERVIRENS_MSG("closure, arg: " << val); };
+
 void freeFunction0() { SEMPERVIRENS_MSG("free function, no arg"); }
+
 void freeFunction1(int val) { SEMPERVIRENS_MSG("free function1, arg: " << val); }
 
-class MyTest {
-
+class MyTest
+{
 public:
 
-  MyTest(std::string filename) : _pFile{std::make_unique<std::ofstream>(std::move(filename))} {}
+  MyTest(std::string filename) : _file{std::make_unique<std::ofstream>(std::move(filename))} {}
   
-  void operator()() const {
-
+  void operator()() const
+  {
     SEMPERVIRENS_MSG("MyTest");
-    *_pFile << "...\n";
+    *_file << "This is a test\n";
   }
 
-  std::unique_ptr<std::ofstream> _pFile;
+  std::unique_ptr<std::ofstream> _file;
 };
 
-int main() {
-
-  auto logger = sempervirens::core::log::ConsoleLogger{};
+int main()
+{
+  auto logger = sempervirens::core::logging::ConsoleLogger{};
   
   auto reg = sempervirens::core::unittesting::UnitTestRegister();
 

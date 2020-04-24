@@ -33,7 +33,7 @@ if(UNIX)
 target_link_libraries(${PROJECT_NAME} INTERFACE X11::X11)
 endif()
 
-set(CMAKE_INSTALL_PREFIX "/home/nico/Desktop/Test")
+#set(CMAKE_INSTALL_PREFIX "/home/nico/Desktop/Test")
 
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<INSTALL_INTERFACE:include/${CMAKE_PROJECT_NAME}>)

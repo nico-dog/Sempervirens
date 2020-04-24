@@ -1,31 +1,21 @@
-//***************************************************
-//
-// Definition of UnitTest object
-// UnitTest is a polymorphics wrapper for the concept of being testable.
-// A type is testable of it provides a free test() function and a call operator.
-//
-//***************************************************
 #ifndef UNITTEST_HPP
 #define UNITTEST_HPP
-//#include <memory>
 
-namespace sempervirens::core::unittesting {
-
-  class UnitTest {
-
-    struct concept_t {
-
+namespace sempervirens::core::unittesting
+{
+  class UnitTest
+  {
+    struct concept_t
+    {
       virtual ~concept_t() = default;
       virtual void _test() const = 0;
     };
 
     template <typename T>
-    struct model_t final : public concept_t {
-      
+    struct model_t final : public concept_t
+    {
       model_t(T&& data);
-
       void _test() const override;
-
       T _data;
     };
     

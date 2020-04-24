@@ -2,17 +2,18 @@
 #define LOGGER_HPP
 #include <Macros/Build.hpp>
 
-namespace sempervirens::core::log {
-
-  enum class LogSeverity {
+namespace sempervirens::core::logging
+{
+  enum class LogSeverity
+  {
     MSG, // Simple message
     WRN, // Warning message
     ERR, // Error message
     FAT  // Fatal error message
   };
   
-  class Logger {
-
+  class Logger
+  {
     static Logger* _head;
     static Logger* _tail;
     
@@ -33,16 +34,16 @@ namespace sempervirens::core::log {
 
   protected:
     static std::mutex _mutex; 
-    static void addToList(Logger* logger);
-    static void removeFromList(Logger* logger);
+    static void AddToList(Logger* logger);
+    static void RemoveFromList(Logger* logger);
   };
 
 
 #if SEMPERVIRENS_BUILD(LOGGING)  
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #define SEMPERVIRENS_LOG(severity, msg) (	     \
-    sempervirens::core::log::Logger::Log(            \
-    sempervirens::core::log::LogSeverity::severity,  \
+    sempervirens::core::logging::Logger::Log(            \
+    sempervirens::core::logging::LogSeverity::severity,  \
     __FILENAME__,				     \
     __PRETTY_FUNCTION__,			     \
     __LINE__,					     \
@@ -61,6 +62,6 @@ namespace sempervirens::core::log {
 
 }
 
-std::ostream& operator<<(std::ostream& os, sempervirens::core::log::LogSeverity const& severity);
+std::ostream& operator<<(std::ostream& os, sempervirens::core::logging::LogSeverity const& severity);
 
 #endif

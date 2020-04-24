@@ -1,22 +1,10 @@
-//***************************************************
-//
-// Definition of LinearAllocator
-// The linear allocator's ctor takes an AreaPolicy (either stack or heap area) as argument.
-// The allocator holds at internal ptr for current the position in the area (one past last allocation).
-// The allocator cannot deallocate individual allocation but can reset the internal ptr to the beginning of the area.
-//
-// Following implementation from:
-// https://blog.molecular-matters.com/2012/08/14/memory-allocation-strategies-a-linear-allocator/
-//
-//***************************************************
 #ifndef LINEARALLOCATOR_HPP
 #define LINEARALLOCATOR_HPP
-//#include <cstddef>
 
-namespace sempervirens::core::memoryalloc {
-
-  class LinearAllocator {
-
+namespace sempervirens::core::memoryalloc
+{
+  class LinearAllocator
+  {
     char* _begin;
     char* _current;
     char* _end;

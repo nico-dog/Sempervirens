@@ -2,27 +2,27 @@
 #include <UnitTesting/UnitTestRegister.hpp>
 #include <Logging/ConsoleLogger.hpp>
 
-namespace sempervirens::core::unittesting {
-
-  class UnitTestRegister::UnitTestRegisterImpl {
-
+namespace sempervirens::core::unittesting
+{
+  class UnitTestRegister::UnitTestRegisterImpl
+  {
   public:
     UnitTestRegisterImpl() = default;
 
     std::vector<UnitTest> _unitTests;
-
-    sempervirens::core::log::ConsoleLogger _logger;
+    
+    sempervirens::core::logging::ConsoleLogger _logger;
   };
 
   UnitTestRegister::UnitTestRegister() : _pImpl{new UnitTestRegisterImpl{}, [](UnitTestRegisterImpl* ptr){ delete ptr; }} {}
 
-  void UnitTestRegister::push(UnitTest unitTest) {
-
+  void UnitTestRegister::push(UnitTest unitTest)
+  {
     _pImpl->_unitTests.emplace_back(std::move(unitTest));
   }
   
-  void UnitTestRegister::run() {
-    
+  void UnitTestRegister::run()
+  {  
     for (auto const& unitTest : _pImpl->_unitTests) test(unitTest);
   }
 }

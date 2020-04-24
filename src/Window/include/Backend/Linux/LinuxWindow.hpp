@@ -37,7 +37,7 @@ namespace sempervirens::window {
     void onUpdate() override;
 
 #if SEMPERVIRENS_BUILD(UNITTESTING)
-    void static test();
+    void static Test();
 #endif   
   };
   

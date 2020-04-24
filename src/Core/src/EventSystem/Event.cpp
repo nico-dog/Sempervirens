@@ -1,8 +1,8 @@
 #define EVENT_CPP
 #include <EventSystem/Event.hpp>
 
-namespace sempervirens::core::event {
-
+namespace sempervirens::core::event
+{
   EventListener WindowCloseEvent::_listeners[nMaxListeners];
   int WindowCloseEvent::_nListeners{0};
 

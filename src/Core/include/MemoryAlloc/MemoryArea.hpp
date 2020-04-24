@@ -1,18 +1,10 @@
-//***************************************************
-//
-// Definition of memory areas
-// - HeapArea: is allocated on the heap via a call to general-purpose allocator (e.g. malloc)
-// - StackArea: is allocated on the stack (e.g. fixed size array, alloca)
-//
-//***************************************************
 #ifndef MEMORYAREA_HPP
 #define MEMORYAREA_HPP
-//#include <cstdint>
 
-namespace sempervirens::core::memoryalloc {
-      
-  class HeapArea {
-
+namespace sempervirens::core::memoryalloc
+{      
+  class HeapArea
+  {
     char* _begin;
     std::size_t _size;
     
@@ -29,8 +21,8 @@ namespace sempervirens::core::memoryalloc {
     std::size_t size() const { return _size; }
   };
 
-  class StackArea {
-
+  class StackArea
+  {
     char* _begin;
     std::size_t _size;
     

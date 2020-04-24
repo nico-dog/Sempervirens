@@ -1,10 +1,10 @@
 #define CONSOLELOGGER_CPP
 #include <Logging/ConsoleLogger.hpp>
 
-namespace sempervirens::core::log {
-
-  ConsoleLogger::ConsoleLogger() { addToList(this); }
-  ConsoleLogger::~ConsoleLogger() { removeFromList(this); }
+namespace sempervirens::core::logging
+{
+  ConsoleLogger::ConsoleLogger() { AddToList(this); }
+  ConsoleLogger::~ConsoleLogger() { RemoveFromList(this); }
 
   void ConsoleLogger::log(LogSeverity severity, char const* file, char const* func, int line, std::string msg)
   {
@@ -16,9 +16,9 @@ namespace sempervirens::core::log {
   }
 
 #if SEMPERVIRENS_BUILD(UNITTESTING)
-  void ConsoleLogger::test() {
-
-    // No need to create console logger, it is created by the unit test register.
+  void ConsoleLogger::Test()
+  {
+    // No need to create console logger here, it is created by the unit test register.
     SEMPERVIRENS_MSG("Test message");
   }
 #endif  
