@@ -66,6 +66,8 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/Window/include/Backend
         DESTINATION include/${CMAKE_PROJECT_NAME})
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Interface
         DESTINATION include/${CMAKE_PROJECT_NAME})
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Keyboard
+        DESTINATION include/${CMAKE_PROJECT_NAME})	
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Backend
         DESTINATION include/${CMAKE_PROJECT_NAME})		
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/Misc/Macros

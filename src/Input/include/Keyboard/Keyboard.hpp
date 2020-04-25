@@ -2,23 +2,32 @@
 #define KEYBOARD_HPP
 #include <Interface/KeySymbols.hpp>
 
-namespace sempervirens::input::keyboard {
+namespace sempervirens::input::keyboard
+{
+  //struct Key
+  //{
+  //  Keysym _symbol;
+  //  Keychr _chr;
+  //};
 
-  struct Key {
-
-    Keysym _symbol;
-    Keychr _chr;
-  };
+  using KeyModifier = unsigned int;
+  //namespace keyModifier
+  //{
+#define NONE() 0
+#define SHIFT() 1
+#define LOCK() 2
+#define CTRL() 3
+  //}
   
-  class Keyboard {
-
+  class Keyboard
+  {
   public:
     Keyboard() = default;
     ~Keyboard() = default;
 
-    bool wentDown(Key key);
-    bool isPressed(Key key);
-    bool wentUp(Key key);
+    bool wentDown(Keysym key);
+    bool isPressed(Keysym key);
+    bool wentUp(Keysym key);
   };
 }
 #endif

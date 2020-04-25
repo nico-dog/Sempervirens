@@ -4,10 +4,10 @@
 #include <Macros/Build.hpp>
 #include <X11/Xlib.h>
 
-namespace sempervirens::window {
-
-  struct ScreenInfo {
-
+namespace sempervirens::window
+{
+  struct ScreenInfo
+  {
     int _id;
     int _width;
     int _height;
@@ -16,8 +16,8 @@ namespace sempervirens::window {
     unsigned long _blackPixel;    
   };
   
-  class LinuxWindow : public IWindow {
-
+  class LinuxWindow : public IWindow
+  {
     Display* _display{nullptr};
     ScreenInfo _screen;
     Window _window;

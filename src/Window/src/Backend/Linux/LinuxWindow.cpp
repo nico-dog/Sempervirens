@@ -5,8 +5,8 @@
 #include <EventSystem/Event.hpp>
 #include <X11/XKBlib.h>
 
-namespace sempervirens::window {
-
+namespace sempervirens::window
+{
   LinuxWindow::LinuxWindow(WindowInfo const& windowInfo)
   {
     initDisplay(windowInfo);
@@ -23,7 +23,7 @@ namespace sempervirens::window {
     _display = XOpenDisplay(getenv("DISPLAY")); 
     if (!_display)
     {
-      SEMPERVIRENS_ERR("Cannot connect to X server");
+      SEMPERVIRENS_FAT("Cannot connect to X server");
       return false;
     }
 
@@ -89,7 +89,7 @@ namespace sempervirens::window {
   {
     XEvent event;
     // If the event queue is empty, XNextEvent blocks till the next event is received.
-    // Avoid blocking by checking is the queue contains events before calling XNextEvent.
+    // Avoid blocking by checking if the queue contains events before calling XNextEvent.
     if (XPending(_display)) // Equivalent to XEventsQueued(_display, QueuedAfterFlush)
       XNextEvent(_display, &event);
     else return;
@@ -169,8 +169,12 @@ namespace sempervirens::window {
       auto chr = XKeysymToString(symbol);
 
       SEMPERVIRENS_MSG("Key pressed event for " << chr);
-      
-      sempervirens::core::event::KeyPressEvent keyPressEvent{symbol, chr};
+
+      KeyModifier mod = key.state & ShiftMask ? SHIFT() : NONE();
+      mod |= key.state & LockMask ? LOCK() : NONE();
+      mod |= key.state & ControlMask ? CTRL() : NONE();     
+	    
+      sempervirens::core::event::KeyPressEvent keyPressEvent{symbol, chr, mod};
       SEMPERVIRENS_SIGNAL(keyPressEvent);
       break;
     }
@@ -179,6 +183,7 @@ namespace sempervirens::window {
     {      
       auto key = event.xkey;
       auto symbol = XkbKeycodeToKeysym(_display, key.keycode, 0, key.state & ShiftMask ? 1 : 0);
+
       if (symbol == NoSymbol)
       {
 	SEMPERVIRENS_ERR("Key released has no symbol");
@@ -188,8 +193,12 @@ namespace sempervirens::window {
       auto chr = XKeysymToString(symbol);
 
       SEMPERVIRENS_MSG("Key released event for " << chr);
+
+      KeyModifier mod = key.state & ShiftMask ? SHIFT() : NONE();
+      mod |= key.state & LockMask ? LOCK() : NONE();
+      mod |= key.state & ControlMask ? CTRL() : NONE();
       
-      sempervirens::core::event::KeyReleaseEvent keyReleaseEvent{symbol, chr};
+      sempervirens::core::event::KeyReleaseEvent keyReleaseEvent{symbol, chr, mod};
       SEMPERVIRENS_SIGNAL(keyReleaseEvent);
       break;
     }   

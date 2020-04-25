@@ -1,10 +1,10 @@
 #ifndef IWINDOW_HPP
 #define IWINDOW_HPP
 
-namespace sempervirens::window {
-
-  struct WindowInfo {
-
+namespace sempervirens::window
+{
+  struct WindowInfo
+  {
     std::string _title;
     int _xPos{0};
     int _yPos{0};
@@ -16,15 +16,15 @@ namespace sempervirens::window {
   };
 
   
-  class IWindow {
-
+  class IWindow
+  {
   public:
     virtual ~IWindow() = default;
 
     virtual void pollEvent() = 0;
     virtual void onUpdate() = 0;
 
-    // Definition provided by backend concrete implementations.
+    // Definition provided by backend implementations.
     static IWindow* createWindow(WindowInfo const& info);
   };
 }

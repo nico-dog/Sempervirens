@@ -1,6 +1,9 @@
 #ifndef EVENT_HPP
 #define EVENT_HPP
 #include <Interface/KeySymbols.hpp>
+#include <Keyboard/Keyboard.hpp>
+
+using namespace sempervirens::input::keyboard;
 
 namespace sempervirens::core::event
 {
@@ -188,13 +191,14 @@ namespace sempervirens::core::event
   class KeyPressEvent : public Event
   {
   public:
-    KeyPressEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr);
+    KeyPressEvent(Keysym symbol, Keychr chr, KeyModifier mod);
     ~KeyPressEvent() = default;
     
     inline EventType type() const override { return EventType::KeyPressed; }
 
-    sempervirens::input::keyboard::Keysym _symbol;
-    sempervirens::input::keyboard::Keychr _chr;
+    Keysym _symbol;
+    Keychr _chr;
+    KeyModifier _mod;
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];    
@@ -203,13 +207,14 @@ namespace sempervirens::core::event
   class KeyReleaseEvent : public Event
   {
   public:
-    KeyReleaseEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr);
+    KeyReleaseEvent(Keysym symbol, Keychr chr, KeyModifier mod);
     ~KeyReleaseEvent() = default;
     
     inline EventType type() const override { return EventType::KeyReleased; }
 
-    sempervirens::input::keyboard::Keysym _symbol;
-    sempervirens::input::keyboard::Keychr _chr;
+    Keysym _symbol;
+    Keychr _chr;
+    KeyModifier _mod;
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];    

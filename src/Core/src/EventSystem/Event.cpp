@@ -1,6 +1,8 @@
 #define EVENT_CPP
 #include <EventSystem/Event.hpp>
 
+using namespace sempervirens::input::keyboard;
+
 namespace sempervirens::core::event
 {
   EventListener WindowCloseEvent::_listeners[nMaxListeners];
@@ -24,11 +26,11 @@ namespace sempervirens::core::event
 
   EventListener KeyPressEvent::_listeners[nMaxListeners];
   int KeyPressEvent::_nListeners{0};
-  KeyPressEvent::KeyPressEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr) : _symbol{symbol}, _chr{chr} {}
+  KeyPressEvent::KeyPressEvent(Keysym symbol, Keychr chr, KeyModifier mod) : _symbol{symbol}, _chr{chr}, _mod{mod} {}
   
   EventListener KeyReleaseEvent::_listeners[nMaxListeners];
   int KeyReleaseEvent::_nListeners{0};
-  KeyReleaseEvent::KeyReleaseEvent(sempervirens::input::keyboard::Keysym symbol, sempervirens::input::keyboard::Keychr chr) : _symbol{symbol}, _chr{chr} {}
+  KeyReleaseEvent::KeyReleaseEvent(Keysym symbol, Keychr chr, KeyModifier mod) : _symbol{symbol}, _chr{chr}, _mod{mod} {}
   
   EventListener MouseMoveEvent::_listeners[nMaxListeners];
   int MouseMoveEvent::_nListeners{0};
