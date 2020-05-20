@@ -1,20 +1,16 @@
-project(core VERSION 1.0 LANGUAGES CXX)
+project(window VERSION 1.0 LANGUAGES CXX)
 
 # Define target
 add_library(window OBJECT)
 if(UNIX)
 target_sources(window PRIVATE
-  src/Backend/Linux/LinuxWindow.cpp)
+  Platform/Linux/LinuxWindow.cpp)
 endif()
 
-target_precompile_headers(window PRIVATE ../Sempervirens_pch.hpp)
+target_precompile_headers(window PRIVATE ../../include/Sempervirens_pch.hpp)
 
 # Set target include directories
-target_include_directories(window PUBLIC
-  include
-  ../Input/include
-  ../Core/include
-  ../Misc)
+target_include_directories(window PUBLIC ../../include)
 
 # Set target compile options
 target_compile_options(window PRIVATE -Wall -O2 -fPIC)
@@ -57,16 +53,16 @@ endif()
 # Define tests
 if(${build_unit_testing})
 
-add_executable(app-window)
-target_sources(app-window PRIVATE test/WindowTest.cpp)
-target_precompile_headers(app-window PRIVATE ../Sempervirens_pch.hpp)
-target_link_libraries(app-window PRIVATE window core)
-target_compile_options(app-window PRIVATE -Wall -O2 -fPIC)
-target_compile_features(app-window PRIVATE cxx_std_17)
-target_compile_definitions(app-window PRIVATE BUILD_UNITTESTING=1)
+add_executable(windowapp)
+target_sources(windowapp PRIVATE ../../tests/Window/WindowTest.cpp)
+target_precompile_headers(windowapp REUSE_FROM logger)
+target_link_libraries(windowapp PRIVATE unittesting window eventsystem logging)
+target_compile_options(windowapp PRIVATE -Wall -O2 -fPIC)
+target_compile_features(windowapp PRIVATE cxx_std_17)
+target_compile_definitions(windowapp PRIVATE BUILD_UNITTESTING=1)
 if(${build_logging})
-target_compile_definitions(app-window PRIVATE BUILD_LOGGING=1)
+target_compile_definitions(windowapp PRIVATE BUILD_LOGGING=1)
 endif()
-add_test(NAME app-window-test COMMAND app-window)
+add_test(NAME window-test COMMAND windowapp)
 
 endif()

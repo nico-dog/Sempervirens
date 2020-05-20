@@ -17,17 +17,24 @@ endif()
 enable_testing()
 
 # Project tree
-add_subdirectory(Vendors)
-add_subdirectory(Core)
-add_subdirectory(Window)
-#add_subdirectory(Input)
-#add_subdirectory(Renderer)
 add_subdirectory(Application)
+add_subdirectory(EventSystem)
+add_subdirectory(Logging)
+add_subdirectory(MemoryAlloc)
+add_subdirectory(UnitTesting)
+#add_subdirectory(Vendors)
+add_subdirectory(Window)
 
 
 # EXPORT
 add_library(${PROJECT_NAME} STATIC)
-target_sources(${PROJECT_NAME} PRIVATE $<TARGET_OBJECTS:core> $<TARGET_OBJECTS:window> $<TARGET_OBJECTS:app>)
+target_sources(${PROJECT_NAME} PRIVATE
+  $<TARGET_OBJECTS:app>
+  $<TARGET_OBJECTS:eventsystem>
+  $<TARGET_OBJECTS:logging>
+  $<TARGET_OBJECTS:memoryalloc>
+  $<TARGET_OBJECTS:unittesting>
+  $<TARGET_OBJECTS:window>)
 
 if(UNIX)
 target_link_libraries(${PROJECT_NAME} INTERFACE X11::X11)
@@ -48,30 +55,28 @@ file(WRITE ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
   "endif()\n"
   "include(${CMAKE_INSTALL_PREFIX}/lib/cmake/${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_NAME}Targets.cmake)\n")
   
-install(FILES ${PROJECT_SOURCE_DIR}/Sempervirens.hpp
+install(FILES ${PROJECT_SOURCE_DIR}/../include/Sempervirens.hpp
 	DESTINATION include/${CMAKE_PROJECT_NAME})
-install(FILES ${PROJECT_SOURCE_DIR}/Sempervirens_pch.hpp
+install(FILES ${PROJECT_SOURCE_DIR}/../include/Sempervirens_pch.hpp
         DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Application/include/Application
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/Application
         DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Core/include/EventSystem
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/EventSystem
         DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Core/include/Logging
-        DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Core/include/MemoryAlloc
-        DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Window/include/Interface
-        DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Window/include/Backend
-        DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Interface
-        DESTINATION include/${CMAKE_PROJECT_NAME})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Keyboard
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/Keyboard
         DESTINATION include/${CMAKE_PROJECT_NAME})	
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Input/include/Backend
-        DESTINATION include/${CMAKE_PROJECT_NAME})		
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Misc/Macros
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/Logging
         DESTINATION include/${CMAKE_PROJECT_NAME})
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/MemoryAlloc
+        DESTINATION include/${CMAKE_PROJECT_NAME})
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/UnitTesting
+        DESTINATION include/${CMAKE_PROJECT_NAME})	
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/Window
+        DESTINATION include/${CMAKE_PROJECT_NAME})			
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/../include/Macros
+        DESTINATION include/${CMAKE_PROJECT_NAME})
+	
+
 
 install(FILES ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
         DESTINATION lib/cmake/${CMAKE_PROJECT_NAME})

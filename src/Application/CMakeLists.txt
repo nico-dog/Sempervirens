@@ -2,13 +2,10 @@ project(app VERSION 1.0 LANGUAGES CXX)
 
 # Define target
 add_library(app OBJECT)
-target_sources(app PRIVATE src/Application/Application.cpp)
-target_include_directories(app PUBLIC
-  include
-  ..Core/include
-  ..Window/include)
+target_sources(app PRIVATE Application.cpp)
+target_include_directories(app PUBLIC ../../include)
 
-target_precompile_headers(app PRIVATE ../Sempervirens_pch.hpp)
+target_precompile_headers(app PRIVATE ../../include/Sempervirens_pch.hpp)
 
 # Set target compile options
 target_compile_options(app PRIVATE -Wall -O2 -fPIC)
@@ -38,6 +35,6 @@ target_compile_definitions(app PRIVATE FEATURE_THREAD_AFFINITY=1)
 endif()
 
 
-target_link_libraries(app PUBLIC core window)
+#target_link_libraries(app PUBLIC core window)
 
 
