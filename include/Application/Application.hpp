@@ -1,14 +1,8 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
-//#include <Interface/IWindow.hpp>
-#include <EventSystem/Event.hpp>
-#include <Macros/Build.hpp>
-
-//#if SEMPERVIRENS_PLATFORM(UNIX)
-//#include <Backend/Linux/LinuxWindow.hpp>
-//#endif
 #include <Window/Window.hpp>
-
+#include <Keyboard/Keyboard.hpp>
+#include <EventSystem/Event.hpp>
 #include <MemoryAlloc/MemoryArea.hpp>
 #include <MemoryAlloc/MemoryArena.hpp>
 #include <MemoryAlloc/LinearAllocator.hpp>
@@ -18,10 +12,11 @@ namespace sempervirens::app
 {
   class Application
   {
-    std::unique_ptr<Window_t> _window{nullptr};
+    Window_t* _window{nullptr};
+    Keyboard_t* _keyboard{nullptr};
+    
     bool _appIsRunning{true};
 
-    void _processInputs();
     
   public:
     Application();
@@ -30,11 +25,13 @@ namespace sempervirens::app
     Application(Application const&) = delete;
     Application& operator=(Application const&) = delete;
 
+    inline void setWindow(Window_t* window) { _window = window; }
+    inline void setKeyboard(Keyboard_t* keyboard) { _keyboard = keyboard; }
     void run();
-    void onEvent(sempervirens::event::Event& event);
+    void onEvent(sempervirens::eventsystem::Event& event);
   };
 
-  // TO BE DEFINED BY CLIENT.
+  // TO BE DEFINED BY CLIENT FOR USE IN ENTRY POINT.
   using namespace sempervirens::memoryalloc;
   using Arena_t = MemoryArena<LinearAllocator, VoidBoundsChecker>;
   Block<Application> createApplication(Arena_t& arena);

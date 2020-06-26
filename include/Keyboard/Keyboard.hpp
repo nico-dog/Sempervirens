@@ -1,33 +1,11 @@
 #ifndef KEYBOARD_HPP
 #define KEYBOARD_HPP
-#include <Keyboard/KeySymbols.hpp>
+#include <Macros/Platform.hpp>
 
-namespace sempervirens::keyboard
-{
-  //struct Key
-  //{
-  //  Keysym _symbol;
-  //  Keychr _chr;
-  //};
+#if SEMPERVIRENS_PLATFORM(UNIX)
+#include <Keyboard/Platform/Linux/LinuxKeyboard.hpp>
 
-  using KeyModifier = unsigned int;
-  //namespace keyModifier
-  //{
-#define NONE() 0
-#define SHIFT() 1
-#define LOCK() 2
-#define CTRL() 3
-  //}
-  
-  class Keyboard
-  {
-  public:
-    Keyboard() = default;
-    ~Keyboard() = default;
+using Keyboard_t = sempervirens::keyboard::LinuxKeyboard;
+#endif
 
-    bool wentDown(Keysym key);
-    bool isPressed(Keysym key);
-    bool wentUp(Keysym key);
-  };
-}
 #endif

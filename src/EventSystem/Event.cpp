@@ -3,7 +3,7 @@
 
 using namespace sempervirens::keyboard;
 
-namespace sempervirens::event
+namespace sempervirens::eventsystem
 {
   EventListener WindowCloseEvent::_listeners[nMaxListeners];
   int WindowCloseEvent::_nListeners{0};
@@ -24,15 +24,15 @@ namespace sempervirens::event
   EventListener WindowFocusOutEvent::_listeners[nMaxListeners];
   int WindowFocusOutEvent::_nListeners{0};
 
-  EventListener KeyPressEvent::_listeners[nMaxListeners];
-  int KeyPressEvent::_nListeners{0};
-  KeyPressEvent::KeyPressEvent(Keysym symbol, Keychr chr, KeyModifier mod) : _symbol{symbol}, _chr{chr}, _mod{mod} {}
+  EventListener KeyPressedEvent::_listeners[nMaxListeners];
+  int KeyPressedEvent::_nListeners{0};
+  KeyPressedEvent::KeyPressedEvent(Keysym symbol, Keychr chr, Keymod mod) : _symbol{symbol}, _chr{chr}, _mod{mod} {}
   
-  EventListener KeyReleaseEvent::_listeners[nMaxListeners];
-  int KeyReleaseEvent::_nListeners{0};
-  KeyReleaseEvent::KeyReleaseEvent(Keysym symbol, Keychr chr, KeyModifier mod) : _symbol{symbol}, _chr{chr}, _mod{mod} {}
+  EventListener KeyReleasedEvent::_listeners[nMaxListeners];
+  int KeyReleasedEvent::_nListeners{0};
+  KeyReleasedEvent::KeyReleasedEvent(Keysym symbol, Keychr chr, Keymod mod) : _symbol{symbol}, _chr{chr}, _mod{mod} {}
   
-  EventListener MouseMoveEvent::_listeners[nMaxListeners];
-  int MouseMoveEvent::_nListeners{0};
-  MouseMoveEvent::MouseMoveEvent(int xPos, int yPos) : _xPos{xPos}, _yPos{yPos} {}  
+  EventListener MouseMovedEvent::_listeners[nMaxListeners];
+  int MouseMovedEvent::_nListeners{0};
+  MouseMovedEvent::MouseMovedEvent(int xPos, int yPos) : _xPos{xPos}, _yPos{yPos} {}  
 }

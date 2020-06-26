@@ -8,5 +8,4 @@
 using Window_t = sempervirens::window::LinuxWindow;
 #endif
 
-
 #endif

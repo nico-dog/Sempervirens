@@ -5,19 +5,26 @@
 #include <EventSystem/Event.hpp>
 #include <X11/XKBlib.h>
 
+using namespace sempervirens::eventsystem;
+
 namespace sempervirens::window
 {
-  LinuxWindow::LinuxWindow(WindowInfo const& windowInfo)
+  //LinuxWindow::LinuxWindow(WindowInfo const& windowInfo)
+  LinuxWindow::LinuxWindow()   
   {
-    initDisplay(windowInfo);
+    SEMPERVIRENS_MSG("LinuxWindow ctor, size of LinuxWindow: " << sizeof(LinuxWindow));
+    //initDisplay(windowInfo);
+    initDisplay(); 
   }
 
   LinuxWindow::~LinuxWindow()
   {
+    SEMPERVIRENS_MSG("LinuxWindow dtor");
     XCloseDisplay(_display);
   }
 
-  bool LinuxWindow::initDisplay(WindowInfo const& windowInfo)
+  //bool LinuxWindow::initDisplay(WindowInfo const& windowInfo)
+  bool LinuxWindow::initDisplay()    
   {
     // Connect to the display of the machine the client code runs on (local display).
     _display = XOpenDisplay(getenv("DISPLAY")); 
@@ -44,13 +51,14 @@ namespace sempervirens::window
     // Create the window.
     _window = XCreateSimpleWindow(_display,
 				  _screen._rootWindow,
-				  windowInfo._xPos, windowInfo._yPos,
+				  //windowInfo._xPos, windowInfo._yPos,
+				  0, 0, 
 				  //windowInfo._widthRatio * _screen._width, windowInfo._heightRatio * _screen._height,
 				  _screen._width, _screen._height,
 				  1, _screen._blackPixel, // 1 pixel wide black border
 				  _screen._whitePixel);   // white background
-    XStoreName(_display, _window, windowInfo._title.c_str());
-
+    //XStoreName(_display, _window, windowInfo._title.c_str());
+    XStoreName(_display, _window, "Sempervirens Appication");
     //auto gc = XCreateGC(_display, _window, 0,0);        
     //XSetBackground(_display, gc, _screen._whitePixel);
     //XSetForeground(_display, gc, _screen._blackPixel);
@@ -86,7 +94,7 @@ namespace sempervirens::window
     return true;
   }
 
-  void LinuxWindow::pollEvent()
+  void LinuxWindow::processInput()
   {
     XEvent event;
     // If the event queue is empty, XNextEvent blocks till the next event is received.
@@ -103,7 +111,7 @@ namespace sempervirens::window
       auto client = event.xclient;
       if (client.data.l[0] == static_cast<long int>(wmDeleteMessage))
       {
-	sempervirens::event::WindowCloseEvent closeEvent;
+	WindowCloseEvent closeEvent;
 	SEMPERVIRENS_SIGNAL(closeEvent);
       }
       break;
@@ -111,8 +119,8 @@ namespace sempervirens::window
 
     case Expose:
     {
-      sempervirens::event::WindowExposeEvent exposeEvent{};
-      SEMPERVIRENS_SIGNAL(exposeEvent);
+      //WindowExposeEvent exposeEvent{};
+      //SEMPERVIRENS_SIGNAL(exposeEvent);
       break;
     }
     
@@ -121,41 +129,45 @@ namespace sempervirens::window
       auto config = event.xconfigure;
       if (config.width != _width || config.height != _height)
       {
-	sempervirens::event::WindowResizeEvent resizeEvent{config.width, config.height};
-	SEMPERVIRENS_SIGNAL(resizeEvent);
+	//WindowResizeEvent resizeEvent{config.width, config.height};
+	//SEMPERVIRENS_SIGNAL(resizeEvent);
 	_width = config.width;
 	_height = config.height;
 	break;
       }
       if (config.x != _xPos || config.y != _yPos)
       {
-	sempervirens::event::WindowMoveEvent moveEvent{config.x, config.y};
-	SEMPERVIRENS_SIGNAL(moveEvent);
+	//WindowMoveEvent moveEvent{config.x, config.y};
+	//SEMPERVIRENS_SIGNAL(moveEvent);
 	_xPos = config.x;
 	_yPos = config.y;
 	break;
       }
     }
 
+    case FocusIn:
+    {
+      //WindowFocusInEvent focusInEvent{};
+      //SEMPERVIRENS_SIGNAL(focusInEvent);
+      break;
+    }
+    
+    case FocusOut:
+    {
+      //WindowFocusOutEvent focusOutEvent{};
+      //SEMPERVIRENS_SIGNAL(focusOutEvent);
+      break;
+    }
+    
     case MotionNotify:
     {
       auto motion = event.xmotion;
-      sempervirens::event::MouseMoveEvent moveEvent{motion.x, motion.y};
-      SEMPERVIRENS_SIGNAL(moveEvent);
+      MouseMovedEvent mouseMovedEvent{motion.x, motion.y};
+      SEMPERVIRENS_SIGNAL(mouseMovedEvent);
+
+      break;
     }
 
-    case FocusIn:
-    {
-      sempervirens::event::WindowFocusInEvent focusInEvent{};
-      SEMPERVIRENS_SIGNAL(focusInEvent);
-      break;
-    }
-    case FocusOut:
-    {
-      sempervirens::event::WindowFocusOutEvent focusOutEvent{};
-      SEMPERVIRENS_SIGNAL(focusOutEvent);
-      break;
-    }
 
     case KeyPress:
     {
@@ -169,14 +181,14 @@ namespace sempervirens::window
 
       auto chr = XKeysymToString(symbol);
 
-      SEMPERVIRENS_MSG("Key pressed event for " << chr);
+      //SEMPERVIRENS_MSG("Key pressed event for " << chr);
 
-      KeyModifier mod = key.state & ShiftMask ? SHIFT() : NONE();
+      Keymod mod = key.state & ShiftMask ? SHIFT() : NONE();
       mod += key.state & LockMask ? LOCK() : NONE();
       mod += key.state & ControlMask ? CTRL() : NONE();     
 	    
-      sempervirens::event::KeyPressEvent keyPressEvent{symbol, chr, mod};
-      SEMPERVIRENS_SIGNAL(keyPressEvent);
+      KeyPressedEvent keyPressedEvent{symbol, chr, mod};
+      SEMPERVIRENS_SIGNAL(keyPressedEvent);
       break;
     }
 
@@ -193,14 +205,14 @@ namespace sempervirens::window
 
       auto chr = XKeysymToString(symbol);
 
-      SEMPERVIRENS_MSG("Key released event for " << chr);
+      //SEMPERVIRENS_MSG("Key released event for " << chr);
 
-      KeyModifier mod = key.state & ShiftMask ? SHIFT() : NONE();
+      Keymod mod = key.state & ShiftMask ? SHIFT() : NONE();
       mod += key.state & LockMask ? LOCK() : NONE();
       mod += key.state & ControlMask ? CTRL() : NONE();
       
-      sempervirens::event::KeyReleaseEvent keyReleaseEvent{symbol, chr, mod};
-      SEMPERVIRENS_SIGNAL(keyReleaseEvent);
+      KeyReleasedEvent keyReleasedEvent{symbol, chr, mod};
+      SEMPERVIRENS_SIGNAL(keyReleasedEvent);
       break;
     }   
       
@@ -209,10 +221,10 @@ namespace sempervirens::window
     }
   }
     
-  void LinuxWindow::onUpdate()
-  {
-    SEMPERVIRENS_MSG("Window update...");
-  }
+  //void LinuxWindow::onUpdate()
+  //{
+  //  SEMPERVIRENS_MSG("Window update...");
+  //}
 
 
 

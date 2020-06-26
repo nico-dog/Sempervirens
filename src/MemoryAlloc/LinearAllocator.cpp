@@ -36,7 +36,7 @@ namespace sempervirens::memoryalloc
     
     SEMPERVIRENS_MSG("current ptr after allocation = " << static_cast<void*>(_current));
     
-    assert(!(_current >= _end));
+    assert(!(_current > _end));
 
     *_current = 0xcc;
 
@@ -46,11 +46,11 @@ namespace sempervirens::memoryalloc
 
   void LinearAllocator::dumpMemory()
   {
-    SEMPERVIRENS_MSG("Memory dump:");
-
     std::stringstream s{};
     auto ptr = _begin;
     auto nBytes = _end - _begin;
+
+    SEMPERVIRENS_MSG("Memory dump: nBytes = " << nBytes);
 
     auto delimiters = std::array<char, 2>{' ', ':'};
     for (auto i = 1; i < nBytes + 1; ++i)
@@ -59,7 +59,7 @@ namespace sempervirens::memoryalloc
 
       s << std::setw(2) << std::setfill('0') << std::hex << +static_cast<std::uint8_t>(*ptr++) << delimiters[(i & 3) > 0];
 
-      if (!(i & 15))
+      if (!(i & 15) || i == nBytes)
       {
 	SEMPERVIRENS_MSG(s.str());
 	std::stringstream().swap(s);

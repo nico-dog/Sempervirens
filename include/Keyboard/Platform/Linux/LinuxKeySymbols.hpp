@@ -7,9 +7,15 @@
 
 namespace sempervirens::keyboard
 {
+  /*
   using Keysym = KeySym;
   using Keychr = char*;
-
+  using KeyModifier = unsigned int;
+#define NONE() 0
+#define SHIFT() 1
+#define LOCK() 2
+#define CTRL() 3
+  */
 #define KEY_SPACE XK_space 
 #define KEY_EXCLA XK_exclam                    
 #define KEY_QUOTE XK_quotedbl                  

@@ -38,16 +38,18 @@ namespace sempervirens::window
     int _xPos{0};
     int _yPos{0};
     
-    bool initDisplay(WindowInfo const& windowInfo);
+    //bool initDisplay(WindowInfo const& windowInfo);
+    bool initDisplay();
     
   public:
-    LinuxWindow(WindowInfo const& windowInfo);
+    //LinuxWindow(WindowInfo const& windowInfo);
+    LinuxWindow();
     ~LinuxWindow();
 
     //void pollEvent() override;
     //void onUpdate() override;
-    void pollEvent();
-    void onUpdate();    
+    void processInput();
+    //void onUpdate();    
 
 #if SEMPERVIRENS_BUILD(UNITTESTING)
     void static Test();

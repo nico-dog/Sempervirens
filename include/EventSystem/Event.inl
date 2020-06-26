@@ -1,6 +1,6 @@
 #include <Logging/Logger.hpp>
 
-namespace sempervirens::event
+namespace sempervirens::eventsystem
 {
   template<typename T>
   EventListener createListener(T* obj)

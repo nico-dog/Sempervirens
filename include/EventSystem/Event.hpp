@@ -1,11 +1,10 @@
 #ifndef EVENT_HPP
 #define EVENT_HPP
 #include <Keyboard/KeySymbols.hpp>
-#include <Keyboard/Keyboard.hpp>
 
 using namespace sempervirens::keyboard;
 
-namespace sempervirens::event
+namespace sempervirens::eventsystem
 {
   // This is the delegate implementation from Stefan Reinhalter presented in
   // Game Engine Gems 3: http://www.gameenginegems.net/geg3.php
@@ -188,44 +187,44 @@ namespace sempervirens::event
   };
 
   // Key events.
-  class KeyPressEvent : public Event
+  class KeyPressedEvent : public Event
   {
   public:
-    KeyPressEvent(Keysym symbol, Keychr chr, KeyModifier mod);
-    ~KeyPressEvent() = default;
+    KeyPressedEvent(Keysym symbol, Keychr chr, Keymod mod);
+    ~KeyPressedEvent() = default;
     
     inline EventType type() const override { return EventType::KeyPressed; }
 
     Keysym _symbol;
     Keychr _chr;
-    KeyModifier _mod;
+    Keymod _mod;
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];    
   };
 
-  class KeyReleaseEvent : public Event
+  class KeyReleasedEvent : public Event
   {
   public:
-    KeyReleaseEvent(Keysym symbol, Keychr chr, KeyModifier mod);
-    ~KeyReleaseEvent() = default;
+    KeyReleasedEvent(Keysym symbol, Keychr chr, Keymod mod);
+    ~KeyReleasedEvent() = default;
     
     inline EventType type() const override { return EventType::KeyReleased; }
 
     Keysym _symbol;
     Keychr _chr;
-    KeyModifier _mod;
+    Keymod _mod;
     
     static int _nListeners;
     static EventListener _listeners[nMaxListeners];    
   };  
 
   // Mouse events.
-  class MouseMoveEvent : public Event
+  class MouseMovedEvent : public Event
   {
   public:
-    MouseMoveEvent(int xPos, int yPos);
-    ~MouseMoveEvent() = default;
+    MouseMovedEvent(int xPos, int yPos);
+    ~MouseMovedEvent() = default;
 
     inline EventType type() const override { return EventType::MouseMoved; }
 
@@ -251,12 +250,12 @@ namespace sempervirens::event
 
   // Event system macros
 #define SEMPERVIRENS_LISTEN(obj, event) (     \
-        addListener<event>(createListener(obj)) \
+        sempervirens::eventsystem::addListener<event>(createListener(obj)) \
 )	
 #define SEMPERVIRENS_IGNORE(obj, event) (        \
-        removeListener<event>(createListener(obj)) \
+        sempervirens::eventsystem::removeListener<event>(createListener(obj)) \
 )
-#define SEMPERVIRENS_SIGNAL(event) signal(event);
+#define SEMPERVIRENS_SIGNAL(event) sempervirens::eventsystem::signal(event);
 
 }
 #include <EventSystem/Event.inl>

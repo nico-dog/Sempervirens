@@ -4,9 +4,10 @@
 //#include <Keyboard/Keyboard.hpp>
 #include <Logging/Logger.hpp>
 
+#include <unistd.h>
+
 using namespace sempervirens::window;
-//using namespace sempervirens::input::keyboard;
-using namespace sempervirens::event;
+using namespace sempervirens::eventsystem;
 
 namespace sempervirens::app
 {
@@ -14,19 +15,12 @@ namespace sempervirens::app
   {
     SEMPERVIRENS_MSG("Application ctor");
     
-    auto windowInfo = WindowInfo{"Sempervirens Application", 0, 0, 1.f / 2, 2.f / 3};
-    //_window = std::unique_ptr<IWindow>(IWindow::createWindow(windowInfo));
-    _window = std::make_unique<Window_t>(windowInfo);
-    
     SEMPERVIRENS_LISTEN(this, WindowCloseEvent);
-    SEMPERVIRENS_LISTEN(this, WindowExposeEvent);
-    SEMPERVIRENS_LISTEN(this, WindowResizeEvent);
-    SEMPERVIRENS_LISTEN(this, WindowMoveEvent);
-    SEMPERVIRENS_LISTEN(this, WindowFocusInEvent);
-    SEMPERVIRENS_LISTEN(this, WindowFocusOutEvent);
-    //SEMPERVIRENS_LISTEN(this, KeyPressEvent);
-    //SEMPERVIRENS_LISTEN(this, KeyReleaseEvent);
-    //SEMPERVIRENS_LISTEN(this, MouseMoveEvent);
+    //SEMPERVIRENS_LISTEN(this, WindowExposeEvent);
+    //SEMPERVIRENS_LISTEN(this, WindowResizeEvent);
+    //SEMPERVIRENS_LISTEN(this, WindowMoveEvent);
+    //SEMPERVIRENS_LISTEN(this, WindowFocusInEvent);
+    //SEMPERVIRENS_LISTEN(this, WindowFocusOutEvent);
   }
   
   void Application::run()
@@ -35,19 +29,22 @@ namespace sempervirens::app
 
     while (_appIsRunning)
     {
-      _window->pollEvent();
+      // Process user input.
+      _window->processInput();
+      _keyboard->processInput();
 
-      //processHardwareEvents(); // Application and physical devices listen to hardware events to cache their state.
-      
-      //_window->onUpdate();
+
+      if (_keyboard->wentDown(KEY_q)) SEMPERVIRENS_MSG("Key q went down");      
+      if (_keyboard->isPressed(KEY_q)) SEMPERVIRENS_MSG("Key q is pressed");
+      if (_keyboard->wentUp(KEY_q)) SEMPERVIRENS_MSG("Key q went up");
+
+      //usleep(33000);
+
+
+
+      _keyboard->onUpdate();
     }
   }
-
-  //void Application::processHardwareEvents()
-  //{
-    // Poll a queued window event from hardware and dispatch to listeners.
-    //_window->pollEvent();
-  //}
 
   void Application::onEvent(Event& event)
   {

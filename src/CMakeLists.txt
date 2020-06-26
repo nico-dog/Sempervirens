@@ -19,6 +19,7 @@ enable_testing()
 # Project tree
 add_subdirectory(Application)
 add_subdirectory(EventSystem)
+add_subdirectory(Keyboard)
 add_subdirectory(Logging)
 add_subdirectory(MemoryAlloc)
 add_subdirectory(UnitTesting)
@@ -31,6 +32,7 @@ add_library(${PROJECT_NAME} STATIC)
 target_sources(${PROJECT_NAME} PRIVATE
   $<TARGET_OBJECTS:app>
   $<TARGET_OBJECTS:eventsystem>
+  $<TARGET_OBJECTS:keyboard>
   $<TARGET_OBJECTS:logging>
   $<TARGET_OBJECTS:memoryalloc>
   $<TARGET_OBJECTS:unittesting>
